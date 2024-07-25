@@ -39,7 +39,7 @@ outputs:
         {% if cuda_major == 12 %}
         - export CUDA_PATH=$BUILD_PREFIX/targets/x86_64-linux/   # [linux64]
         - export CUDA_PATH=$BUILD_PREFIX/targets/sbsa-linux/     # [aarch64]
-        - set CUDA_PATH=%PREFIX%\Library                         # [win64]
+        - set CUDA_PATH=%BUILD_PREFIX%\Library                         # [win64]
         {% elif cuda_major == 11 %}
         # do nothing, CUDA_PATH is supposed to be set in the CI image
         {% elif cuda_major == 0 %}
