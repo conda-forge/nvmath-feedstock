@@ -99,12 +99,11 @@ outputs:
         - nvmath
 
   # just need one CI pipeline to run this, pick CUDA 12 for simplicity
-  {% if cuda_major == 12 %}
   - name: nvmath-python-dx
     version: {{ ".".join(version.split(".")[:3]) }}
     build:
       number: {{ build }}
-      skip: true  # [(py < 39 or py > 311) or not (linux64 or aarch64)]
+      skip: true  # [(py < 39 or py > 311) or not (linux64 or aarch64) or not (cuda_compiler_version or "").startswith("12")]
       script:
         - echo "building the [dx] meta package..."
     requirements:
@@ -125,8 +124,6 @@ outputs:
     test:
       imports:
         - nvmath
-  {% endif %}
-
 
 about:
   home: https://developer.nvidia.com/nvmath-python
