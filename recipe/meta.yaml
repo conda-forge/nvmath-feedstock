@@ -29,7 +29,7 @@ build:
 outputs:
 
   - name: nvmath-python
-    version: {{ ".".join(version.split(".")[:3]) }}
+    version: {{ version }}
     build:
       number: {{ build }}
       string: cuda{{ cuda_major }}_py{{ CONDA_PY }}h{{ PKG_HASH }}_{{ build }}  # [cuda_compiler_version != "None"]
@@ -39,7 +39,7 @@ outputs:
         {% if cuda_major == 12 %}
         - export CUDA_PATH=$BUILD_PREFIX/targets/x86_64-linux/   # [linux64]
         - export CUDA_PATH=$BUILD_PREFIX/targets/sbsa-linux/     # [aarch64]
-        - set CUDA_PATH=%BUILD_PREFIX%\Library                         # [win64]
+        - set CUDA_PATH=%BUILD_PREFIX%\Library                   # [win64]
         {% elif cuda_major == 11 %}
         # do nothing, CUDA_PATH is supposed to be set in the CI image
         {% elif cuda_major == 0 %}
@@ -77,17 +77,13 @@ outputs:
         - numpy >=1.23,<2  # TODO: relax me in the next release
         - pywin32  # [win64]
         - cuda-version >={{ cuda_major }}.0.*,<{{ cuda_major+1 }}.0.a0  # [cuda_compiler_version != "None"]
-        {% if cuda_major == 12 %}
-        - cupy  # TODO: remove me in the next release
-        - libcublas
-        - libcusolver
-        - libcusparse
-        - libcufft
-        - libcurand
-        {% elif cuda_major == 11 %}
-        - cupy  # TODO: remove me in the next release
-        - cudatoolkit
-        {% endif %}
+        - cupy           # [cuda_compiler_version != "None"]  # TODO: remove me in the next release
+        - libcublas      # [(cuda_compiler_version or "").startswith("12")]
+        - libcusolver    # [(cuda_compiler_version or "").startswith("12")]
+        - libcusparse    # [(cuda_compiler_version or "").startswith("12")]
+        - libcufft       # [(cuda_compiler_version or "").startswith("12")]
+        - libcurand      # [(cuda_compiler_version or "").startswith("12")]
+        - cudatoolkit    # [(cuda_compiler_version or "").startswith("11")]
       {% if cuda_major == 0 %}
         - cupy-core  # TODO: remove me in the next release
       run_constrained:
@@ -100,7 +96,7 @@ outputs:
 
   # just need one CI pipeline to run this, pick CUDA 12 for simplicity
   - name: nvmath-python-dx
-    version: {{ ".".join(version.split(".")[:3]) }}
+    version: {{ version }}
     build:
       number: {{ build }}
       skip: true  # [(py < 39 or py > 311) or not (linux64 or aarch64) or not (cuda_compiler_version or "").startswith("12")]
