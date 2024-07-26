@@ -41,12 +41,12 @@ outputs:
       skip: true  # [(py < 39) or cuda_compiler_version not in ("None", "11.8", "12.0")]
       script:
         # do nothing for CUDA 11, as CUDA_PATH is set in the CI images
-        - export CUDA_PATH=$BUILD_PREFIX/targets/x86_64-linux/   # [linux64 and (cuda_compiler_version or "").startswith("12")]
-        - export CUDA_PATH=$BUILD_PREFIX/targets/sbsa-linux/     # [aarch64 and (cuda_compiler_version or "").startswith("12")]
-        - set CUDA_PATH=%BUILD_PREFIX%\Library                   # [win64 and (cuda_compiler_version or "").startswith("12")]
-        - export CUDA_PATH=$PREFIX/targets/x86_64-linux/         # [linux64 and cuda_compiler_version == "None"]
-        - export CUDA_PATH=$PREFIX/targets/sbsa-linux/           # [aarch64 and cuda_compiler_version == "None"]
-        - set CUDA_PATH=%PREFIX%\Library                         # [win64 and cuda_compiler_version == "None"]
+        - export CUDA_PATH=$BUILD_PREFIX/targets/x86_64-linux/   # [(cuda_compiler_version or "").startswith("12") and linux64]
+        - export CUDA_PATH=$BUILD_PREFIX/targets/sbsa-linux/     # [(cuda_compiler_version or "").startswith("12") and aarch64]
+        - set CUDA_PATH=%BUILD_PREFIX%\Library                   # [(cuda_compiler_version or "").startswith("12") and win64]
+        - export CUDA_PATH=$PREFIX/targets/x86_64-linux/         # [cuda_compiler_version == "None" and linux64]
+        - export CUDA_PATH=$PREFIX/targets/sbsa-linux/           # [cuda_compiler_version == "None" and aarxh64]
+        - set CUDA_PATH=%PREFIX%\Library                         # [cuda_compiler_version == "None" and win64]
         - >-
           {{ PYTHON }} -m pip install --no-deps --no-build-isolation -v .
       ignore_run_exports_from:
