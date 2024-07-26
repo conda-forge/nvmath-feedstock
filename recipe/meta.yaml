@@ -1,12 +1,12 @@
 {% set version = "0.1.0" %}
-{% set build = 2 %}
+{% set number = 2 %}
 
 {% if cuda_compiler_version in (None, "None", True, False) %}
 {% set cuda_major = 0 %}
 {% else %}
 {% set cuda_major = environ.get("cuda_compiler_version", "11.8").split(".")[0] | int %}
 # Prioritize over GPU builds
-{% set build = build + 200 %}
+{% set number = number + 200 %}
 {% endif %}
 
 # {{ PYTHON }} is not resolved properly in multi-output recipes...
@@ -23,18 +23,18 @@ source:
     sha256: 151ce8f50b9e65082efc1edaf0aa01b5a96650f7226ae18a3b47af286dfd62fb
 
 build:
-  number: {{ build }}
-  skip: true  # [py < 39 or osx or ppc64le]
+  number: {{ number }}
+  skip: true  # [(py < 39) or osx or ppc64le]
 
 outputs:
 
   - name: nvmath-python
     version: {{ version }}
     build:
-      number: {{ build }}
-      #string: cuda{{ cuda_major }}_py{{ py }}h{{ PKG_HASH }}_{{ build }}  # [cuda_compiler_version != "None"]
-      #string: core_py{{ py }}h{{ PKG_HASH }}_{{ build }}                  # [cuda_compiler_version == "None"]
-      skip: true  # [py < 39 or cuda_compiler_version not in ("None", "11.8", "12.0")]
+      number: {{ number }}
+      #string: cuda{{ cuda_major }}_py{{ py }}h{{ PKG_HASH }}_{{ number }}  # [cuda_compiler_version != "None"]
+      #string: core_py{{ py }}h{{ PKG_HASH }}_{{ number }}                  # [cuda_compiler_version == "None"]
+      skip: true  # [(py < 39) or cuda_compiler_version not in ("None", "11.8", "12.0")]
       script:
         # do nothing for CUDA 11, as CUDA_PATH is set in the CI images
         - export CUDA_PATH=$BUILD_PREFIX/targets/x86_64-linux/   # [linux64 and (cuda_compiler_version or "").startswith("12")]
@@ -91,7 +91,7 @@ outputs:
   - name: nvmath-python-dx
     version: {{ version }}
     build:
-      number: {{ build }}
+      number: {{ number }}
       # dx support currently requires CUDA 12
       skip: true  # [(py < 39 or py > 311) or not (linux64 or aarch64) or not (cuda_compiler_version or "").startswith("12")]
       script:
