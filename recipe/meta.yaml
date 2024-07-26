@@ -102,7 +102,8 @@ outputs:
   - name: nvmath-python-dx
     version: {{ ".".join(version.split(".")[:3]) }}
     build:
-      number: {{ build }}
+      number: 2
+      #number: {{ build }}
       skip: true  # [py < 39 or ppc64le or win64]
       script:
         - echo "building the [dx] meta package..."
@@ -114,6 +115,7 @@ outputs:
         - {{ pin_subpackage("nvmath-python", exact=True) }}
         - cupy  # TODO: remove me in the next release
         - numba 0.59.*
+        - pynvjitlink 0.1.14
         - cuda-python
         - cuda-nvcc
         - cuda-nvrtc
