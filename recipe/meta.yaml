@@ -32,8 +32,8 @@ outputs:
     version: {{ version }}
     build:
       number: {{ build }}
-      string: cuda{{ cuda_major }}_py{{ CONDA_PY }}h{{ PKG_HASH }}_{{ build }}  # [cuda_compiler_version != "None"]
-      string: core_py{{ CONDA_PY }}h{{ PKG_HASH }}_{{ build }}                  # [cuda_compiler_version == "None"]
+      string: cuda{{ cuda_major }}_py{{ py }}h{{ PKG_HASH }}_{{ build }}  # [cuda_compiler_version != "None"]
+      string: core_py{{ py }}h{{ PKG_HASH }}_{{ build }}                  # [cuda_compiler_version == "None"]
       skip: true  # [py < 39 or cuda_compiler_version not in ("None", "11.8", "12.0")]
       script:
         {% if cuda_major == 12 %}
