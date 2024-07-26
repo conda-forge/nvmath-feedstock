@@ -26,6 +26,10 @@ build:
   number: {{ number }}
   skip: true  # [(py < 39) or osx or ppc64le]
 
+requirements:
+  host:
+    - python
+
 outputs:
 
   - name: nvmath-python
