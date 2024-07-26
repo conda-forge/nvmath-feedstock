@@ -17,5 +17,3 @@ build_platform:
   linux_aarch64: linux_64
 provider:
   linux_aarch64: azure
-channel_sources:
-  conda-forge,rapidsai
