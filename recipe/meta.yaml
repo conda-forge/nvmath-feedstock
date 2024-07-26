@@ -36,8 +36,8 @@ outputs:
     version: {{ version }}
     build:
       number: {{ number }}
-      #string: cuda{{ cuda_major }}_py{{ py }}h{{ PKG_HASH }}_{{ number }}  # [cuda_compiler_version != "None"]
-      #string: core_py{{ py }}h{{ PKG_HASH }}_{{ number }}                  # [cuda_compiler_version == "None"]
+      string: cuda{{ cuda_major }}_py{{ py }}h{{ PKG_HASH }}_{{ number }}  # [cuda_compiler_version != "None"]
+      string: core_py{{ py }}h{{ PKG_HASH }}_{{ number }}                  # [cuda_compiler_version == "None"]
       skip: true  # [(py < 39) or cuda_compiler_version not in ("None", "11.8", "12.0")]
       script:
         # do nothing for CUDA 11, as CUDA_PATH is set in the CI images
@@ -49,10 +49,9 @@ outputs:
         - set CUDA_PATH=%PREFIX%\Library                         # [win64 and cuda_compiler_version == "None"]
         - >-
           {{ PYTHON }} -m pip install --no-deps --no-build-isolation -v .
-      ignore_run_exports:
-        - cuda-version
-        - cuda-cudart   # [cuda_compiler_version == "None"]
-        - cudatoolkit   # [(cuda_compiler_version or "").startswith("11")]
+      ignore_run_exports_from:
+        - {{ compiler('cuda') }}  # [cuda_compiler_version != "None"]
+        - cuda-cudart             # [cuda_compiler_version == "None"]
     requirements:
       build:
         - {{ compiler('c') }}
