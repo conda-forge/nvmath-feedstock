@@ -51,7 +51,7 @@ outputs:
           {{ PYTHON }} -m pip install --no-deps --no-build-isolation -v .
       ignore_run_exports_from:
         - {{ compiler('cuda') }}  # [cuda_compiler_version != "None"]
-        - cuda-cudart             # [cuda_compiler_version == "None"]
+        - cuda-cudart-dev         # [cuda_compiler_version == "None"]
     requirements:
       build:
         - {{ compiler('c') }}
