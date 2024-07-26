@@ -104,7 +104,7 @@ outputs:
     version: {{ ".".join(version.split(".")[:3]) }}
     build:
       number: {{ build }}
-      skip: true  # [py < 39 or ppc64le or win64]
+      skip: true  # [(py < 39 or py > 311) or not (linux64 or aarch64)]
       script:
         - echo "building the [dx] meta package..."
     requirements:
