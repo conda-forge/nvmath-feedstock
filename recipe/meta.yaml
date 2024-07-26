@@ -121,13 +121,12 @@ outputs:
         - cuda-nvrtc
         - cuda-cudart-dev
         - cuda-cccl
-        - mathdx 24.04.0.*
+        - mathdx 24.04.0.* *_1
         - cuda-version >=12.0.*,<12.4.a0
     test:
-      commands:
-        - export MATHDX_HOME=$CONDA_PREFIX/include/mathdx  # [linux]
-        - python -c "import nvmath"
-        - python -c "import nvmath.device"
+      imports:
+        - nvmath
+        - nvmath.device
   {% endif %}
 
 
