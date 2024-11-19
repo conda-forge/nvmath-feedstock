@@ -1,4 +1,4 @@
-{% set version = "0.1.0" %}
+{% set version = "0.2.0" %}
 {% set number = 2 %}
 
 {% if cuda_compiler_version in (None, "None", True, False) %}
@@ -20,7 +20,7 @@ package:
 
 source:
   - url: https://github.com/NVIDIA/nvmath-python/archive/refs/tags/v{{ ".".join(version.split(".")[:3]) }}.tar.gz
-    sha256: 151ce8f50b9e65082efc1edaf0aa01b5a96650f7226ae18a3b47af286dfd62fb
+    sha256: 155b60e6dbacfea617aa9a2e92d262062916ccc2e3b51af199d4c1e2d9ef6555
 
 build:
   number: {{ number }}
@@ -37,7 +37,7 @@ outputs:
     build:
       number: {{ number }}
       string: cuda{{ cuda_major }}_py{{ py }}h{{ PKG_HASH }}_{{ number }}  # [cuda_compiler_version != "None"]
-      string: core_py{{ py }}h{{ PKG_HASH }}_{{ number }}                  # [cuda_compiler_version == "None"]
+      string: core_py{{ py }}h{{ PKG_HASH }}_{{ number }}  # [cuda_compiler_version == "None"]
       skip: true  # [(py < 39) or cuda_compiler_version not in ("None", "11.8", "12.0")]
       script:
         # do nothing for CUDA 11, as CUDA_PATH is set in the CI images
@@ -85,7 +85,7 @@ outputs:
         - cuda-version >=12.0.*,<13.0.a0  # [(cuda_compiler_version or "").startswith("12")]
         - cudatoolkit                     # [(cuda_compiler_version or "").startswith("11")]
         - cuda-version >=11.0.*,<12.0.a0  # [(cuda_compiler_version or "").startswith("11")]
-      run_constrained:                    # [cuda_compiler_version == "None"]
+      run_constrained:   # [cuda_compiler_version == "None"]
         - cuda-version >=11.0.*,<13.a0    # [cuda_compiler_version == "None"]
     test:
       imports:
