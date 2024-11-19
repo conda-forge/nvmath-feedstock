@@ -1,5 +1,5 @@
 {% set version = "0.2.0" %}
-{% set number = 2 %}
+{% set number = 0 %}
 
 {% if cuda_compiler_version in (None, "None", True, False) %}
 {% set cuda_major = 0 %}
@@ -15,7 +15,7 @@
 {% set PYTHON = "%PREFIX%\\python" %}  # [win]
 
 package:
-  name: nvmath  # dummy
+  name: nvmath-split
   version: {{ version }}
 
 source:
@@ -24,7 +24,8 @@ source:
 
 build:
   number: {{ number }}
-  skip: true  # [(py < 39) or osx or ppc64le]
+  skip: true  # [py < 310]
+  skip: true  # [osx or ppc64le]
 
 requirements:
   host:
@@ -38,7 +39,7 @@ outputs:
       number: {{ number }}
       string: cuda{{ cuda_major }}_py{{ py }}h{{ PKG_HASH }}_{{ number }}  # [cuda_compiler_version != "None"]
       string: core_py{{ py }}h{{ PKG_HASH }}_{{ number }}  # [cuda_compiler_version == "None"]
-      skip: true  # [(py < 39) or cuda_compiler_version not in ("None", "11.8", "12.0")]
+      skip: true  # [(py < 310) or cuda_compiler_version not in ("None", "11.8", "12.0")]
       script:
         # do nothing for CUDA 11, as CUDA_PATH is set in the CI images
         - export CUDA_PATH=$BUILD_PREFIX/targets/x86_64-linux/   # [(cuda_compiler_version or "").startswith("12") and linux64]
@@ -63,6 +64,9 @@ outputs:
         - cython <3                              # [build_platform != target_platform]
       host:
         - python
+        - setuptools >=61.0.0
+        - wheel >=0.34.0
+        - packaging
         - pip
         - cython <3
         # We use headers from CUDA 12 for simplicity, but they can come from any version.
@@ -71,9 +75,11 @@ outputs:
         - cuda-cudart-dev                        # [cuda_compiler_version == "None"]
         - cuda-crt                               # [cuda_compiler_version == "None"]
         - cuda-version {{ cuda_major }}.*        # [cuda_compiler_version != "None"]
+        - libnvpl-fft-dev >=0.3.0  # [aarch64]
+        - mkl-devel  # [not aarch64]
       run:
         - python
-        - numpy >=1.23,<2  # TODO: relax me in the next release
+        - numpy >=1.24,<3
         - pywin32                         # [win64]
         - cupy                            # [cuda_compiler_version != "None"]  # TODO: remove me in the next release
         - cupy-core                       # [cuda_compiler_version == "None"]  # TODO: remove me in the next release
@@ -95,8 +101,10 @@ outputs:
     version: {{ version }}
     build:
       number: {{ number }}
+      skip: true  # [py < 310 or py > 312]
+      skip: true  # [not (linux64 or aarch64)]
       # dx support currently requires CUDA 12
-      skip: true  # [(py < 39 or py > 311) or not (linux64 or aarch64) or not (cuda_compiler_version or "").startswith("12")]
+      skip: true  # [not (cuda_compiler_version or "").startswith("12")]
       script:
         - echo "building the [dx] meta package..."
     requirements:
@@ -106,14 +114,14 @@ outputs:
         - python
         - {{ pin_subpackage("nvmath-python", exact=True) }}
         - cupy  # TODO: remove me in the next release
-        - numba 0.59.*
+        - numba 0.60.*
         - cuda-python
         - cuda-nvcc
         - cuda-nvrtc
         - cuda-cudart-dev
         - cuda-cccl
         - mathdx 24.04.0.*
-        - cuda-version >=12.0.*,<12.4.a0
+        - cuda-version >=12.0,!=12.4,!=12.5.0
     test:
       imports:
         - nvmath
