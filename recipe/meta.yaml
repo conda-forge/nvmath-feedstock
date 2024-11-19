@@ -75,8 +75,7 @@ outputs:
         - cuda-cudart-dev                        # [cuda_compiler_version == "None"]
         - cuda-crt                               # [cuda_compiler_version == "None"]
         - cuda-version {{ cuda_major }}.*        # [cuda_compiler_version != "None"]
-        - libnvpl-fft-dev >=0.3.0  # [aarch64]
-        - mkl-devel  # [not aarch64]
+
       run:
         - python
         - numpy >=1.24,<3
@@ -93,6 +92,9 @@ outputs:
         - cuda-version >=11.0.*,<12.0.a0  # [(cuda_compiler_version or "").startswith("11")]
       run_constrained:   # [cuda_compiler_version == "None"]
         - cuda-version >=11.0.*,<13.a0    # [cuda_compiler_version == "None"]
+        - libnvpl-fft-dev >=0.3.0  # [aarch64]
+        - mkl-devel 2024.4
+        - libnvpl-fft0 >=0.3.0,<1.0a0
     test:
       imports:
         - nvmath
