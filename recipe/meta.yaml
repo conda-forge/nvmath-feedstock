@@ -141,6 +141,7 @@ about:
   dev_url: https://github.com/NVIDIA/nvmath-python
 
 extra:
+  feedstock-name: nvmath
   recipe-maintainers:
     - conda-forge/cuda
     - carterbox
