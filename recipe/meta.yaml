@@ -101,11 +101,17 @@ outputs:
         - cuda-version >=11.0.*,<13.a0    # [cuda_compiler_version == "None"]
         - mkl 2024
         - libnvpl-fft0 >=0.3.0,<1.0a0
+        - mathdx 24.04.0.*
+        - numba 0.60.*
+        # run_constrained because this is an off-channel package
+        - pynvjitlink >=0.2
     test:
       requires:
         - pip
       imports:
         - nvmath
+        - nvmath.fft
+        - nvmath.linalg
       commands:
         - pip check
 
@@ -119,6 +125,7 @@ outputs:
         - echo "building the [dx] meta package..."
     requirements:
       run:
+        # TODO: Move versions to run_constraints on the main package in next release.
         - __unix
         - {{ pin_subpackage("nvmath-python", max_pin='x.x.x') }}
         - cupy  # TODO: remove me in the next release
@@ -139,6 +146,25 @@ outputs:
         - pynvjitlink
       imports:
         - nvmath
+        - nvmath.device
+        - nvmath.fft
+        - nvmath.linalg
+      commands:
+        - pip check
+
+  - name: nvmath-python-cpu
+    requirements:
+      run:
+        - {{ pin_subpackage("nvmath-python", max_pin='x.x.x') }}
+        - mkl  # [x86_64 or linux64]
+        - libnvpl-fft0  # [arm64 or aarch64]
+    test:
+      requires:
+        - pip
+      imports:
+        - nvmath
+        - nvmath.fft
+        - nvmath.linalg
       commands:
         - pip check
 
