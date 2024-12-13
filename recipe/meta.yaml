@@ -151,6 +151,13 @@ outputs:
         - nvmath.linalg
       commands:
         - pip check
+    about:
+      license: Apache-2.0
+      license_file: LICENSE
+      summary: Install this meta-package to use nvmath-python device features
+      description: >-
+        This is a meta-package which installs a some optional dependencies. The main package
+        is nvmath-python.
 
   - name: nvmath-python-cpu
     requirements:
@@ -167,18 +174,28 @@ outputs:
         - nvmath.linalg
       commands:
         - pip check
+    about:
+      license: Apache-2.0
+      license_file: LICENSE
+      summary: Install this meta-package to use nvmath-python cpu features
+      description: >-
+        This is a meta-package which installs a some optional dependencies. The main package
+        is nvmath-python.
 
 about:
   home: https://developer.nvidia.com/nvmath-python
   license: Apache-2.0
   license_url: https://docs.nvidia.com/cuda/nvmath-python/latest/license.html
   license_file: LICENSE
-  summary: "nvmath-python: NVIDIA Math Libraries for the Python Ecosystem"
-  description: |
-    nvmath-python aims to bring the power and performance of the NVIDIA math libraries
-    to the Python ecosystem with intuitive, pythonic APIs. The ultimate goal is to
-    provide users full access to all of the available library features in a variety
-    of execution spaces.
+  summary: NVIDIA Math Libraries for the Python Ecosystem
+  description: >-
+    nvmath-python aims to bring the power and performance of the NVIDIA math libraries to
+    the Python ecosystem with intuitive, pythonic APIs. The ultimate goal is to provide
+    users full access to all of the available library features in a variety of execution
+    spaces.
+
+    To enable optional features, install any of the following packages: nvmath-python-cpu,
+    nvmath-python-dx.
   doc_url: https://docs.nvidia.com/cuda/nvmath-python
   dev_url: https://github.com/NVIDIA/nvmath-python
 
