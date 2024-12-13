@@ -3,7 +3,7 @@ c_compiler:
 c_stdlib:
 - vs
 channel_sources:
-- conda-forge
+- conda-forge,rapidsai
 channel_targets:
 - conda-forge main
 cuda_compiler:
@@ -20,6 +20,8 @@ python:
 - 3.12.* *_cpython
 target_platform:
 - win-64
+tk:
+- '8.6'
 zip_keys:
 - - cuda_compiler
   - cuda_compiler_version
