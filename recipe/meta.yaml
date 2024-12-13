@@ -29,6 +29,11 @@ build:
   skip: true  # [py < 310 or osx or ppc64le]
 
 requirements:
+  build:
+    - {{ compiler('c') }}
+    - {{ compiler('cuda') }}  # [cuda_compiler_version != "None"]
+    - {{ compiler('cxx') }}
+    - {{ stdlib('c') }}
   host:
     - python
 
@@ -40,7 +45,7 @@ outputs:
       number: {{ number }}
       string: cuda{{ cuda_major }}_py{{ py }}h{{ PKG_HASH }}_{{ number }}  # [cuda_compiler_version != "None"]
       string: core_py{{ py }}h{{ PKG_HASH }}_{{ number }}  # [cuda_compiler_version == "None"]
-      skip: true  # [(py < 310) or cuda_compiler_version not in ("None", "11.8", "12.0")]
+      skip: true  # [(py < 310) or cuda_compiler_version not in ("None", "11.8", "12.6")]
       script:
         # do nothing for CUDA 11, as CUDA_PATH is set in the CI images
         - export CUDA_PATH=$BUILD_PREFIX/targets/x86_64-linux/   # [(cuda_compiler_version or "").startswith("12") and linux64]
