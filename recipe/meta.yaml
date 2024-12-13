@@ -159,28 +159,28 @@ outputs:
         This is a meta-package which installs a some optional dependencies. The main package
         is nvmath-python.
 
-  - name: nvmath-python-cpu
-    requirements:
-      run:
-        - {{ pin_subpackage("nvmath-python", max_pin='x.x.x') }}
-        - mkl  # [x86_64 or linux64]
-        - libnvpl-fft0  # [arm64 or aarch64]
-    test:
-      requires:
-        - pip
-      imports:
-        - nvmath
-        - nvmath.fft
-        - nvmath.linalg
-      commands:
-        - pip check
-    about:
-      license: Apache-2.0
-      license_file: LICENSE
-      summary: Install this meta-package to use nvmath-python cpu features
-      description: >-
-        This is a meta-package which installs a some optional dependencies. The main package
-        is nvmath-python.
+  # - name: nvmath-python-cpu
+  #   requirements:
+  #     run:
+  #       - {{ pin_subpackage("nvmath-python", max_pin='x.x.x') }}
+  #       - mkl  # [x86_64 or linux64]
+  #       - libnvpl-fft0  # [arm64 or aarch64]
+  #   test:
+  #     requires:
+  #       - pip
+  #     imports:
+  #       - nvmath
+  #       - nvmath.fft
+  #       - nvmath.linalg
+  #     commands:
+  #       - pip check
+  #   about:
+  #     license: Apache-2.0
+  #     license_file: LICENSE
+  #     summary: Install this meta-package to use nvmath-python cpu features
+  #     description: >-
+  #       This is a meta-package which installs a some optional dependencies. The main package
+  #       is nvmath-python.
 
 about:
   home: https://developer.nvidia.com/nvmath-python
