@@ -3,8 +3,10 @@
 
 {% if cuda_compiler_version in (None, "None", True, False) %}
 {% set cuda_major = 0 %}
+{% set extras = "" %}
 {% else %}
 {% set cuda_major = environ.get("cuda_compiler_version", "11.8").split(".")[0] | int %}
+{% set extras = "[sysctk" ~ cuda_major ~ "]" %}
 # Prioritize over GPU builds
 {% set number = number + 200 %}
 {% endif %}
@@ -55,7 +57,7 @@ outputs:
         - export CUDA_PATH=$PREFIX/targets/sbsa-linux/           # [cuda_compiler_version == "None" and aarch64]
         - set CUDA_PATH=%PREFIX%\Library                         # [cuda_compiler_version == "None" and win64]
         - >-
-          {{ PYTHON }} -m pip install --no-deps --no-build-isolation -v .
+          {{ PYTHON }} -m pip install --no-deps --no-build-isolation -v .{{ extras }}
       ignore_run_exports_from:
         - {{ compiler('cuda') }}  # [cuda_compiler_version != "None"]
         - cuda-cudart-dev         # [cuda_compiler_version == "None"]
