@@ -21,12 +21,12 @@ package:
 source:
   - url: https://github.com/NVIDIA/nvmath-python/archive/refs/tags/v{{ ".".join(version.split(".")[:3]) }}.tar.gz
     sha256: 155b60e6dbacfea617aa9a2e92d262062916ccc2e3b51af199d4c1e2d9ef6555
-    patch:
+    patches:
       - 000-curand-path.patch
+
 build:
   number: {{ number }}
-  skip: true  # [py < 310]
-  skip: true  # [osx or ppc64le]
+  skip: true  # [py < 310 or osx or ppc64le]
 
 requirements:
   host:
