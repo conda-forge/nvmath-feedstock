@@ -7,8 +7,6 @@
 {% else %}
 {% set cuda_major = environ.get("cuda_compiler_version", "11.8").split(".")[0] | int %}
 {% set extras = "[sysctk" ~ cuda_major ~ "]" %}
-# Prioritize over GPU builds
-{% set number = number + 200 %}
 {% endif %}
 
 # {{ PYTHON }} is not resolved properly in multi-output recipes...
@@ -44,8 +42,9 @@ outputs:
   - name: nvmath-python
     version: {{ version }}
     build:
-      number: {{ number }}
-      string: cuda{{ cuda_major }}_py{{ py }}h{{ PKG_HASH }}_{{ number }}  # [cuda_compiler_version != "None"]
+      number: {{ number + 200 }}  # [cuda_compiler_version != "None"]
+      string: cuda{{ cuda_major }}_py{{ py }}h{{ PKG_HASH }}_{{ number + 200 }}  # [cuda_compiler_version != "None"]
+      number: {{ number }}  # [cuda_compiler_version == "None"]
       string: core_py{{ py }}h{{ PKG_HASH }}_{{ number }}  # [cuda_compiler_version == "None"]
       skip: true  # [(py < 310) or cuda_compiler_version not in ("None", "11.8", "12.6")]
       script:
@@ -88,7 +87,6 @@ outputs:
         - numpy >=1.24,<3
         - pywin32                         # [win64]
         - cupy                            # [cuda_compiler_version != "None"]  # TODO: remove me in the next release
-        - cupy-core                       # [cuda_compiler_version == "None"]  # TODO: remove me in the next release
         - libcublas                       # [(cuda_compiler_version or "").startswith("12")]
         - libcusolver                     # [(cuda_compiler_version or "").startswith("12")]
         - libcusparse                     # [(cuda_compiler_version or "").startswith("12")]
@@ -117,16 +115,19 @@ outputs:
 
   - name: nvmath-python-dx
     build:
-      skip: true  # [py < 310 or py > 312]
-      skip: true  # [not (linux64 or aarch64)]
+      noarch: generic
+      force_ignore_keys:
+        - cuda_compiler_version
+      # There will be only one variant of this meta-package for all platforms, but we want
+      # to run the tests with multiple variants of the base package.
+      # dx only supports linux right now
+      skip: true  # [not linux]
       # dx support currently requires CUDA 12
       skip: true  # [not (cuda_compiler_version or "").startswith("12")]
-      script:
-        - echo "building the [dx] meta package..."
     requirements:
       run:
         # TODO: Move versions to run_constraints on the main package in next release.
-        - __unix
+        - __linux
         - {{ pin_subpackage("nvmath-python", max_pin='x.x.x') }}
         - cupy  # TODO: remove me in the next release
         - numba 0.60.*
@@ -141,9 +142,15 @@ outputs:
         # run_constrained because this is an off-channel package
         - pynvjitlink >=0.2
     test:
+      source_files:
+        - examples/device
+        - tests/example_tests
       requires:
         - pip
         - pynvjitlink
+        - pytest
+        # Test with this exact build and not a previous build
+        - {{ pin_subpackage("nvmath-python", exact=True) }}
       imports:
         - nvmath
         - nvmath.device
@@ -151,6 +158,8 @@ outputs:
         - nvmath.linalg
       commands:
         - pip check
+        # We can't run tests with CUDA builds because CuPy complains about no GPUs
+        # - pytest tests/example_tests/device_tests/ -v -k "simple or curand"
     about:
       license: Apache-2.0
       license_file: LICENSE
@@ -159,28 +168,41 @@ outputs:
         This is a meta-package which installs a some optional dependencies. The main package
         is nvmath-python.
 
-  # - name: nvmath-python-cpu
-  #   requirements:
-  #     run:
-  #       - {{ pin_subpackage("nvmath-python", max_pin='x.x.x') }}
-  #       - mkl  # [x86_64 or linux64]
-  #       - libnvpl-fft0  # [arm64 or aarch64]
-  #   test:
-  #     requires:
-  #       - pip
-  #     imports:
-  #       - nvmath
-  #       - nvmath.fft
-  #       - nvmath.linalg
-  #     commands:
-  #       - pip check
-  #   about:
-  #     license: Apache-2.0
-  #     license_file: LICENSE
-  #     summary: Install this meta-package to use nvmath-python cpu features
-  #     description: >-
-  #       This is a meta-package which installs a some optional dependencies. The main package
-  #       is nvmath-python.
+  - name: nvmath-python-cpu
+    build:
+      force_ignore_keys:
+        - cuda_compiler_version
+      # This meta-package will have only one variant for each platform, but we want to run
+      # the tests with both cuda and non-cuda, so no skips here.
+    requirements:
+      run:
+        - {{ pin_subpackage("nvmath-python", max_pin='x.x.x') }}
+        - mkl  # [x86_64 or linux64]
+        - libnvpl-fft0  # [arm64 or aarch64]
+    test:
+      source_files:
+        - examples/fft/example*cpu_execution.py
+        - tests/example_tests
+      requires:
+        - pip
+        - pytest
+        # Test with this exact build and not a previous build
+        - {{ pin_subpackage("nvmath-python", exact=True) }}
+      imports:
+        - nvmath
+        - nvmath.fft
+        - nvmath.linalg
+      commands:
+        - pip check
+        # We can't run tests with CUDA builds because CuPy complains about no GPUs
+        - pytest tests/example_tests/fft_tests/ -k cpu -v  # [cuda_compiler_version == "None"]
+    about:
+      license: Apache-2.0
+      license_file: LICENSE
+      summary: Install this meta-package to use nvmath-python cpu features
+      description: >-
+        This is a meta-package which installs a some optional dependencies. The main package
+        is nvmath-python.
 
 about:
   home: https://developer.nvidia.com/nvmath-python
