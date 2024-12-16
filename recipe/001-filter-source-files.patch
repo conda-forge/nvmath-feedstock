@@ -1,0 +1,42 @@
+From 95fb180fd56f6dd2985e12ca57e85ef7ade85895 Mon Sep 17 00:00:00 2001
+From: Daniel Ching <dching@nvidia.com>
+Date: Mon, 16 Dec 2024 12:43:46 -0600
+Subject: [PATCH] BLD: Use manifest to control source files in wheels
+
+We do not need to ship source files in our wheels (*.cpp, *.pyx).
+Use MANIFEST.in to filter wheel contents
+---
+ MANIFEST.in | 5 +++++
+ setup.py    | 4 ----
+ 2 files changed, 5 insertions(+), 4 deletions(-)
+ create mode 100644 MANIFEST.in
+
+diff --git a/MANIFEST.in b/MANIFEST.in
+new file mode 100644
+index 00000000..39aca1a4
+--- /dev/null
++++ b/MANIFEST.in
+@@ -0,0 +1,5 @@
++graft nvmath
++global-include *.pyd
++global-include *.pyi
++global-exclude *.cpp
++global-exclude *.pyx
+diff --git a/setup.py b/setup.py
+index c38e6d90..702045a9 100644
+--- a/setup.py
++++ b/setup.py
+@@ -129,10 +129,6 @@ else:
+ setup(
+     ext_modules=cythonize(ext_modules, verbose=True, language_level=3, compiler_directives=compiler_directives),
+     packages=find_packages(include=["nvmath", "nvmath.*"]),
+-    package_data=dict.fromkeys(
+-        find_packages(include=["nvmath.*"]),
+-        ["*.pxd", "*.pyx", "*.py"],
+-    ),
+     zip_safe=False,
+     cmdclass=cmdclass,
+ )
+-- 
+2.34.1
+

@@ -28,6 +28,7 @@ source:
     sha256: 155b60e6dbacfea617aa9a2e92d262062916ccc2e3b51af199d4c1e2d9ef6555
     patches:
       - 000-curand-path.patch
+      - 001-filter-source-files.patch
 
 build:
   number: {{ number }}
