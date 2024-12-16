@@ -2,11 +2,15 @@
 {% set number = 1 %}
 
 {% if cuda_compiler_version in (None, "None", True, False) %}
-{% set cuda_major = 0 %}
-{% set extras = "" %}
+  {% set cuda_major = 0 %}
+  {% set extras = "" %}
+  {% set build_number = number %}
+  {% set build_string = 'core' %}
 {% else %}
-{% set cuda_major = environ.get("cuda_compiler_version", "11.8").split(".")[0] | int %}
-{% set extras = "[sysctk" ~ cuda_major ~ "]" %}
+  {% set cuda_major = environ.get("cuda_compiler_version", "11.8").split(".")[0] | int %}
+  {% set extras = "[sysctk" ~ cuda_major ~ "]" %}
+  {% set build_number = number + 200 %}
+  {% set build_string = 'cuda' ~ cuda_major %}
 {% endif %}
 
 # {{ PYTHON }} is not resolved properly in multi-output recipes...
@@ -42,10 +46,8 @@ outputs:
   - name: nvmath-python
     version: {{ version }}
     build:
-      number: {{ number + 200 }}  # [cuda_compiler_version != "None"]
-      string: cuda{{ cuda_major }}_py{{ py }}h{{ PKG_HASH }}_{{ number + 200 }}  # [cuda_compiler_version != "None"]
-      number: {{ number }}  # [cuda_compiler_version == "None"]
-      string: core_py{{ py }}h{{ PKG_HASH }}_{{ number }}  # [cuda_compiler_version == "None"]
+      number: {{ build_number }}
+      string: {{ build_string }}_py{{ py }}h{{ PKG_HASH }}_{{ build_number }}
       skip: true  # [(py < 310) or cuda_compiler_version not in ("None", "11.8", "12.6")]
       script:
         # do nothing for CUDA 11, as CUDA_PATH is set in the CI images
@@ -121,9 +123,8 @@ outputs:
       # There will be only one variant of this meta-package for all platforms, but we want
       # to run the tests with multiple variants of the base package.
       # dx only supports linux right now
-      skip: true  # [not linux]
       # dx support currently requires CUDA 12
-      skip: true  # [not (cuda_compiler_version or "").startswith("12")]
+      skip: true  # [(not linux) or (not (cuda_compiler_version or "").startswith("12"))]
     requirements:
       run:
         # TODO: Move versions to run_constraints on the main package in next release.
