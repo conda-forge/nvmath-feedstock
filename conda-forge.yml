@@ -13,4 +13,4 @@ github:
   tooling_branch_name: main
 idle_timeout_minutes: 120
 provider:
-  linux_aarch64: default
+  linux_aarch64: azure
