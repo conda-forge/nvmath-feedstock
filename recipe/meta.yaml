@@ -131,9 +131,9 @@ outputs:
       skip: true  # [(not linux) or (not (cuda_compiler_version or "").startswith("12"))]
     requirements:
       run:
-        # TODO: Move versions to run_constraints on the main package in next release.
         - __linux
-        - {{ pin_subpackage("nvmath-python", max_pin='x.x.x') }}
+        - nvmath-python {{ version }}=cuda*
+        # TODO: Move versions to run_constraints on the main package in next release; keep package names
         - cupy  # TODO: remove me in the next release
         - numba 0.60.*
         - cuda-python
