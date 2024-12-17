@@ -102,7 +102,7 @@ outputs:
         - cuda-version >=11.0.*,<12.0.a0  # [(cuda_compiler_version or "").startswith("11")]
       run_constrained:
         - cuda-version >=11.0.*,<13.a0    # [cuda_compiler_version == "None"]
-        - mkl 2024
+        - mkl >=2024
         - libnvpl-fft0 >=0.3.0,<1.0a0
         - mathdx 24.04.0.*
         - numba 0.60.*
