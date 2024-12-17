@@ -119,6 +119,7 @@ outputs:
         - pip check
 
   - name: nvmath-python-dx
+    version: {{ version }}
     build:
       noarch: generic
       force_ignore_keys:
@@ -173,6 +174,7 @@ outputs:
         is nvmath-python.
 
   - name: nvmath-python-cpu
+    version: {{ version }}
     build:
       force_ignore_keys:
         - cuda_compiler_version
