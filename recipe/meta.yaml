@@ -51,7 +51,7 @@ outputs:
     build:
       number: {{ build_number }}
       string: {{ build_string }}_py{{ py }}h{{ PKG_HASH }}_{{ build_number }}
-      skip: true  # [(py < 310) or cuda_compiler_version not in ("None", "11.8", "12.6")]
+      skip: true  # [py < 310]
       script:
         # do nothing for CUDA 11, as CUDA_PATH is set in the CI images
         - export CUDA_PATH=$BUILD_PREFIX/targets/x86_64-linux/   # [(cuda_compiler_version or "").startswith("12") and linux64]
