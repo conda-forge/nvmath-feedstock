@@ -9,6 +9,7 @@
 {% else %}
   {% set cuda_major = environ.get("cuda_compiler_version", "11.8").split(".")[0] | int %}
   {% set extras = "[sysctk" ~ cuda_major ~ "]" %}
+  # Prioritize GPU builds
   {% set build_number = number + 200 %}
   {% set build_string = 'cuda' ~ cuda_major %}
 {% endif %}
