@@ -132,7 +132,8 @@ outputs:
     requirements:
       run:
         - __linux
-        - nvmath-python {{ version }}=cuda*
+        - {{ pin_subpackage("nvmath-python", max_pin='x.x.x') }}
+        - nvmath-python =*=cuda*
         # TODO: Move versions to run_constraints on the main package in next release; keep package names
         - cupy  # TODO: remove me in the next release
         - numba 0.60.*
