@@ -121,7 +121,7 @@ outputs:
         - cupy  # [cuda_compiler_version != "None"]
         - pip
         - pytest  # [cuda_compiler_version != "None"]
-        - pytorch  # [cuda_compiler_version != "None"]
+        - pytorch  # [(cuda_compiler_version != "None") and (not win)]
       imports:
         - nvmath
         - nvmath.fft
@@ -214,7 +214,7 @@ outputs:
       requires:
         - pip
         - pytest
-        - pytorch
+        - pytorch  # [not win]
       imports:
         - nvmath
         - nvmath.fft
