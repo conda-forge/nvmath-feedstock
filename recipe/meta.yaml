@@ -19,6 +19,8 @@
 {% set PYTHON = "$PREFIX/bin/python" %}  # [linux]
 {% set PYTHON = "%PREFIX%\\python" %}  # [win]
 
+{% set is_gpu_available = false %}
+
 package:
   name: nvmath-split
   version: {{ version }}
@@ -109,14 +111,27 @@ outputs:
         # run_constrained because this is an off-channel package
         - pynvjitlink >=0.2
     test:
+{% if is_gpu_available %}
+      source_files:
+        - examples/fft
+        - examples/linalg
+        - tests/example_tests
+{% endif %}
       requires:
+        - cupy  # [cuda_compiler_version != "None"]
         - pip
+        - pytest  # [cuda_compiler_version != "None"]
+        - pytorch  # [cuda_compiler_version != "None"]
       imports:
         - nvmath
         - nvmath.fft
         - nvmath.linalg
       commands:
         - pip check
+{% if is_gpu_available %}
+        - pytest tests/example_tests/matmul_tests/ -k "not cpu" -v -ra  # [cuda_compiler_version != "None"]
+        - pytest tests/example_tests/fft_tests/ -k "not cpu" -v -ra  # [cuda_compiler_version != "None"]
+{% endif %}
 
   - name: nvmath-python-dx
     version: {{ version }}
@@ -150,15 +165,17 @@ outputs:
         # run_constrained because this is an off-channel package
         - pynvjitlink >=0.2
     test:
+{% if is_gpu_available %}
       source_files:
         - examples/device
+        - examples/fft/*callback*.py
         - tests/example_tests
+{% endif %}
       requires:
         - pip
         - pynvjitlink
         - pytest
-        # Test with this exact build and not a previous build
-        - {{ pin_subpackage("nvmath-python", exact=True) }}
+        - cffi
       imports:
         - nvmath
         - nvmath.device
@@ -166,8 +183,10 @@ outputs:
         - nvmath.linalg
       commands:
         - pip check
-        # We can't run tests with CUDA builds because CuPy complains about no GPUs
-        # - pytest tests/example_tests/device_tests/ -v -k "simple or curand"
+{% if is_gpu_available %}
+        - pytest tests/example_tests/device_tests/ -v -ra -k "simple or curand"
+        - pytest tests/example_tests/fft_tests/ -k "callback" -v -ra
+{% endif %}
     about:
       license: Apache-2.0
       license_file: LICENSE
@@ -195,8 +214,7 @@ outputs:
       requires:
         - pip
         - pytest
-        # Test with this exact build and not a previous build
-        - {{ pin_subpackage("nvmath-python", exact=True) }}
+        - pytorch
       imports:
         - nvmath
         - nvmath.fft
@@ -204,7 +222,7 @@ outputs:
       commands:
         - pip check
         # We can't run tests with CUDA builds because CuPy complains about no GPUs
-        - pytest tests/example_tests/fft_tests/ -k cpu -v  # [cuda_compiler_version == "None"]
+        - pytest tests/example_tests/fft_tests/ -k cpu -v -ra  # [cuda_compiler_version == "None"]
     about:
       license: Apache-2.0
       license_file: LICENSE
