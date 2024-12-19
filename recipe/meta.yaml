@@ -1,5 +1,5 @@
-{% set version = "0.2.0" %}
-{% set number = 1 %}
+{% set version = "0.2.1" %}
+{% set number = 0 %}
 
 {% if cuda_compiler_version in (None, "None", True, False) %}
   {% set cuda_major = 0 %}
@@ -27,9 +27,8 @@ package:
 
 source:
   - url: https://github.com/NVIDIA/nvmath-python/archive/refs/tags/v{{ ".".join(version.split(".")[:3]) }}.tar.gz
-    sha256: 155b60e6dbacfea617aa9a2e92d262062916ccc2e3b51af199d4c1e2d9ef6555
+    sha256: aff642b16b7dea06d34093bf4dc1b2f4f88e75382e1188423640c1cdb8d2bc0b
     patches:
-      - 000-curand-path.patch
       - 001-filter-source-files.patch
 
 build:
@@ -194,8 +193,7 @@ outputs:
       license_file: LICENSE
       summary: Install this meta-package to use nvmath-python device features
       description: >-
-        This is a meta-package which installs a some optional dependencies. The main package
-        is nvmath-python.
+        This is a meta-package which installs a some optional dependencies. The main package is nvmath-python.
 
   - name: nvmath-python-cpu
     version: {{ version }}
@@ -230,8 +228,7 @@ outputs:
       license_file: LICENSE
       summary: Install this meta-package to use nvmath-python cpu features
       description: >-
-        This is a meta-package which installs a some optional dependencies. The main package
-        is nvmath-python.
+        This is a meta-package which installs a some optional dependencies. The main package is nvmath-python.
 
 about:
   home: https://developer.nvidia.com/nvmath-python
@@ -240,13 +237,9 @@ about:
   license_file: LICENSE
   summary: NVIDIA Math Libraries for the Python Ecosystem
   description: >-
-    nvmath-python aims to bring the power and performance of the NVIDIA math libraries to
-    the Python ecosystem with intuitive, pythonic APIs. The ultimate goal is to provide
-    users full access to all of the available library features in a variety of execution
-    spaces.
+    nvmath-python aims to bring the power and performance of the NVIDIA math libraries to the Python ecosystem with intuitive, pythonic APIs. The ultimate goal is to provide users full access to all of the available library features in a variety of execution spaces.
 
-    To enable optional features, install any of the following packages: nvmath-python-cpu,
-    nvmath-python-dx.
+    To enable optional features, install any of the following packages: nvmath-python-cpu, nvmath-python-dx.
   doc_url: https://docs.nvidia.com/cuda/nvmath-python
   dev_url: https://github.com/NVIDIA/nvmath-python
 
