@@ -170,12 +170,15 @@ outputs:
         - examples/device
         - examples/fft/*callback*.py
         - tests/example_tests
-{% endif %}
       requires:
         - pip
         - pynvjitlink
         - pytest
         - cffi
+{% else %}
+      requires:
+        - pip
+{% endif %}
       imports:
         - nvmath
         - nvmath.device
