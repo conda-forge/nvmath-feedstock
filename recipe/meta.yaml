@@ -175,13 +175,14 @@ outputs:
         - pynvjitlink
         - pytest
         - cffi
+      imports:
+        - nvmath.device
 {% else %}
       requires:
         - pip
-{% endif %}
       imports:
+{% endif %}
         - nvmath
-        - nvmath.device
         - nvmath.fft
         - nvmath.linalg
       commands:
