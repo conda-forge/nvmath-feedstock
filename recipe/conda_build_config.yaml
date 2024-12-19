@@ -1,2 +1,5 @@
 channel_sources:
-  - conda-forge,rapidsai
+  - conda-forge
+# Enable rapidsai for testing only. The upload workflow will reject packages which include
+# channels other than conda-forge
+  # - rapidsai

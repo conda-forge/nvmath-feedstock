@@ -164,20 +164,22 @@ outputs:
         # run_constrained because this is an off-channel package
         - pynvjitlink >=0.2
     test:
+      requires:
+        - pip
 {% if is_gpu_available %}
+        - pynvjitlink
+        - pytest
+        - cffi
       source_files:
         - examples/device
         - examples/fft/*callback*.py
         - tests/example_tests
 {% endif %}
-      requires:
-        - pip
-        - pynvjitlink
-        - pytest
-        - cffi
       imports:
-        - nvmath
+{% if is_gpu_available %}
         - nvmath.device
+{% endif %}
+        - nvmath
         - nvmath.fft
         - nvmath.linalg
       commands:
