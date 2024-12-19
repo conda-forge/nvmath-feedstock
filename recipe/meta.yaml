@@ -29,7 +29,6 @@ source:
   - url: https://github.com/NVIDIA/nvmath-python/archive/refs/tags/v{{ ".".join(version.split(".")[:3]) }}.tar.gz
     sha256: aff642b16b7dea06d34093bf4dc1b2f4f88e75382e1188423640c1cdb8d2bc0b
     patches:
-      - 000-curand-path.patch
       - 001-filter-source-files.patch
 
 build:
