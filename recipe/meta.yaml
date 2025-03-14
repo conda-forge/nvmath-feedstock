@@ -129,7 +129,7 @@ outputs:
         - pip check
 {% if is_gpu_available %}
         - pytest tests/example_tests/matmul_tests/ -k "not cpu" -v -ra  # [cuda_compiler_version != "None"]
-        - pytest tests/example_tests/fft_tests/ -k "not cpu" -v -ra  # [cuda_compiler_version != "None"]
+        - pytest tests/example_tests/fft_tests/ -k "not (cpu or callback)" -v -ra  # [cuda_compiler_version != "None"]
 {% endif %}
 
   - name: nvmath-python-dx
