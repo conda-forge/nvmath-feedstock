@@ -252,7 +252,7 @@ outputs:
       # There will be only one variant of this meta-package for all platforms, but we want
       # to run the tests with multiple variants of the base package.
       # distributed support currently requires CUDA 12
-      skip: true  # [not (cuda_compiler_version or "").startswith("12")]
+      skip: true  # [not (cuda_compiler_version or "").startswith("12") or win]
     requirements:
       run:
         - {{ pin_subpackage("nvmath-python", max_pin='x.x.x') }}
