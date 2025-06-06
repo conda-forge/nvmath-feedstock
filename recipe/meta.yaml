@@ -253,7 +253,6 @@ outputs:
       # to run the tests with multiple variants of the base package.
       # distributed support currently requires CUDA 12
       skip: true  # [not (cuda_compiler_version or "").startswith("12")]
-      skip: true
     requirements:
       run:
         - {{ pin_subpackage("nvmath-python", max_pin='x.x.x') }}
@@ -263,8 +262,7 @@ outputs:
         - libnvshmem3 >=3.2.5
     test:
       source_files:
-        - examples/distributed
-        - tests/example_tests
+        - tests/nvmath_tests/distributed
       requires:
         - pip
         - pytest
@@ -276,7 +274,7 @@ outputs:
       commands:
         - pip check
       {% if is_gpu_available %}
-        - mpiexec -n 2 pytest tests/example_tests/distributed_tests/ -v -ra
+        - mpiexec -n 2 pytest tests/nvmath_tests/distributed -v -ra
       {% endif %}
     about:
       license: Apache-2.0
