@@ -1,4 +1,4 @@
-{% set version = "0.3.0" %}
+{% set version = "0.4.0" %}
 {% set number = 0 %}
 
 {% if cuda_compiler_version in (None, "None", True, False) %}
@@ -29,7 +29,7 @@ package:
 
 source:
   - url: https://github.com/NVIDIA/nvmath-python/archive/refs/tags/v{{ ".".join(version.split(".")[:3]) }}.tar.gz
-    sha256: 6b0c5c5a431d53e2342a21b2a41ac45947c1a3680d546876e89b6b72910f7526
+    sha256: e6b6fbae5c17154bb6e3d0adc89451ad5e35af257b8e25a4ff386269829386a0
 
 build:
   number: {{ number }}
