@@ -31,6 +31,17 @@ Summary: Install this meta-package to use nvmath-python cpu features
 
 This is a meta-package which installs a some optional dependencies. The main package is nvmath-python.
 
+About nvmath-python-distributed
+-------------------------------
+
+
+
+Package license: Apache-2.0
+
+Summary: Install this meta-package to use nvmath-python cpu features
+
+This is a meta-package which installs a some optional dependencies. The main package is nvmath-python.
+
 About nvmath-python-dx
 ----------------------
 
@@ -263,6 +274,7 @@ Current release info
 | --- | --- | --- | --- |
 | [![Conda Recipe](https://img.shields.io/badge/recipe-nvmath--python-green.svg)](https://anaconda.org/conda-forge/nvmath-python) | [![Conda Downloads](https://img.shields.io/conda/dn/conda-forge/nvmath-python.svg)](https://anaconda.org/conda-forge/nvmath-python) | [![Conda Version](https://img.shields.io/conda/vn/conda-forge/nvmath-python.svg)](https://anaconda.org/conda-forge/nvmath-python) | [![Conda Platforms](https://img.shields.io/conda/pn/conda-forge/nvmath-python.svg)](https://anaconda.org/conda-forge/nvmath-python) |
 | [![Conda Recipe](https://img.shields.io/badge/recipe-nvmath--python--cpu-green.svg)](https://anaconda.org/conda-forge/nvmath-python-cpu) | [![Conda Downloads](https://img.shields.io/conda/dn/conda-forge/nvmath-python-cpu.svg)](https://anaconda.org/conda-forge/nvmath-python-cpu) | [![Conda Version](https://img.shields.io/conda/vn/conda-forge/nvmath-python-cpu.svg)](https://anaconda.org/conda-forge/nvmath-python-cpu) | [![Conda Platforms](https://img.shields.io/conda/pn/conda-forge/nvmath-python-cpu.svg)](https://anaconda.org/conda-forge/nvmath-python-cpu) |
+| [![Conda Recipe](https://img.shields.io/badge/recipe-nvmath--python--distributed-green.svg)](https://anaconda.org/conda-forge/nvmath-python-distributed) | [![Conda Downloads](https://img.shields.io/conda/dn/conda-forge/nvmath-python-distributed.svg)](https://anaconda.org/conda-forge/nvmath-python-distributed) | [![Conda Version](https://img.shields.io/conda/vn/conda-forge/nvmath-python-distributed.svg)](https://anaconda.org/conda-forge/nvmath-python-distributed) | [![Conda Platforms](https://img.shields.io/conda/pn/conda-forge/nvmath-python-distributed.svg)](https://anaconda.org/conda-forge/nvmath-python-distributed) |
 | [![Conda Recipe](https://img.shields.io/badge/recipe-nvmath--python--dx-green.svg)](https://anaconda.org/conda-forge/nvmath-python-dx) | [![Conda Downloads](https://img.shields.io/conda/dn/conda-forge/nvmath-python-dx.svg)](https://anaconda.org/conda-forge/nvmath-python-dx) | [![Conda Version](https://img.shields.io/conda/vn/conda-forge/nvmath-python-dx.svg)](https://anaconda.org/conda-forge/nvmath-python-dx) | [![Conda Platforms](https://img.shields.io/conda/pn/conda-forge/nvmath-python-dx.svg)](https://anaconda.org/conda-forge/nvmath-python-dx) |
 
 Installing nvmath
@@ -275,16 +287,16 @@ conda config --add channels conda-forge
 conda config --set channel_priority strict
 ```
 
-Once the `conda-forge` channel has been enabled, `nvmath-python, nvmath-python-cpu, nvmath-python-dx` can be installed with `conda`:
+Once the `conda-forge` channel has been enabled, `nvmath-python, nvmath-python-cpu, nvmath-python-distributed, nvmath-python-dx` can be installed with `conda`:
 
 ```
-conda install nvmath-python nvmath-python-cpu nvmath-python-dx
+conda install nvmath-python nvmath-python-cpu nvmath-python-distributed nvmath-python-dx
 ```
 
 or with `mamba`:
 
 ```
-mamba install nvmath-python nvmath-python-cpu nvmath-python-dx
+mamba install nvmath-python nvmath-python-cpu nvmath-python-distributed nvmath-python-dx
 ```
 
 It is possible to list all of the versions of `nvmath-python` available on your platform with `conda`:

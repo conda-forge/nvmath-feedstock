@@ -33,7 +33,7 @@ source:
 
 build:
   number: {{ number }}
-  skip: true  # [py < 310 or osx or ppc64le]
+  skip: true  # [py < 310 or py > 312 or osx or ppc64le]
 
 # Have certain top-level requirements so conda-smithy can render the correct variants
 requirements:
@@ -63,9 +63,12 @@ outputs:
         - set CUDA_PATH=%PREFIX%\Library                         # [cuda_compiler_version == "None" and win64]
         - >-
           {{ PYTHON }} -m pip install --no-deps --no-build-isolation -v .{{ extras }}
+      ignore_run_exports:
+        - cuda-version  # [cuda_compiler_version != "None"]
       ignore_run_exports_from:
-        - {{ compiler('cuda') }}  # [cuda_compiler_version != "None"]
-        - cuda-cudart-dev         # [cuda_compiler_version == "None"]
+        - cuda-cudart-dev  # [cuda_compiler_version == "None"]
+      force_ignore_keys:
+        - pytorch
     requirements:
       build:
         - {{ compiler('c') }}
@@ -74,14 +77,14 @@ outputs:
         - {{ stdlib('c') }}
         - cross-python_{{ target_platform }}     # [build_platform != target_platform]
         - python                                 # [build_platform != target_platform]
-        - cython <3                              # [build_platform != target_platform]
+        - cython >=3.0.4                         # [build_platform != target_platform]
       host:
         - python
-        - setuptools >=61.0.0
+        - setuptools >=77.0.3
         - wheel >=0.34.0
         - packaging
         - pip
-        - cython <3
+        - cython >=3.0.4
         # We use headers from CUDA 12 for simplicity, but they can come from any version.
         # On conda-forge using the CUDA 12 packages is more lightweight.
         - cuda-version 12.*                      # [cuda_compiler_version == "None"]
@@ -90,23 +93,30 @@ outputs:
         - cuda-version {{ cuda_major }}.*        # [cuda_compiler_version != "None"]
       run:
         - python
+        # requirements/pip/nvmath-python.txt
+        - cuda-bindings
+        - cuda-core 0.2.*
         - numpy >=1.24,<3
         - pywin32                         # [win64]
+        # requirements/pip/nvmath-python-cu12.txt
         - cupy                            # [cuda_compiler_version != "None"]  # TODO: remove me in the next release
         - libcublas                       # [(cuda_compiler_version or "").startswith("12")]
-        - libcusolver                     # [(cuda_compiler_version or "").startswith("12")]
-        - libcusparse                     # [(cuda_compiler_version or "").startswith("12")]
+        - cuda-nvrtc                      # [(cuda_compiler_version or "").startswith("12")]
+        - cuda-cudart                     # [(cuda_compiler_version or "").startswith("12")]
         - libcufft                        # [(cuda_compiler_version or "").startswith("12")]
         - libcurand                       # [(cuda_compiler_version or "").startswith("12")]
+        - libcusolver                     # [(cuda_compiler_version or "").startswith("12")]
+        - libcusparse                     # [(cuda_compiler_version or "").startswith("12")]
         - cuda-version >=12.0.*,<13.0.a0  # [(cuda_compiler_version or "").startswith("12")]
+        # requirements/pip/nvmath-python-cu11.txt
         - cudatoolkit                     # [(cuda_compiler_version or "").startswith("11")]
         - cuda-version >=11.0.*,<12.0.a0  # [(cuda_compiler_version or "").startswith("11")]
       run_constrained:
         - cuda-version >=11.0.*,<13.a0    # [cuda_compiler_version == "None"]
-        - mkl >=2024
         - libnvpl-fft0 >=0.3.0,<1.0a0
-        - mathdx 24.04.0.*
-        - numba 0.60.*
+        - libmathdx 0.2.*
+        - mkl >=2024
+        - numba-cuda >=0.11.0
         # run_constrained because this is an off-channel package
         - pynvjitlink >=0.2
     test:
@@ -138,6 +148,7 @@ outputs:
       noarch: generic
       force_ignore_keys:
         - cuda_compiler_version
+        - pytorch
       # There will be only one variant of this meta-package for all platforms, but we want
       # to run the tests with multiple variants of the base package.
       # dx only supports linux right now
@@ -150,19 +161,20 @@ outputs:
         - nvmath-python * cuda*
         # TODO: Move versions to run_constraints on the main package in next release; keep package names
         - cupy  # TODO: remove me in the next release
-        - numba 0.60.*
+        - numba
+        - numba-cuda >=0.11.0
         - cuda-python
         - cuda-nvcc
-        - cuda-nvrtc
+        - cuda-nvrtc !=12.4.*,!=12.5.0
         - cuda-cudart-dev
-        - cuda-cccl
-        - mathdx 24.04.0.*
+        - cuda-cccl >12.4.127
+        - libmathdx 0.2.*
         - cuda-version >=12.0,!=12.4,!=12.5.0
         # Device APIs need headers for JIT compile
         - libcurand-dev
       run_constrained:
         # run_constrained because this is an off-channel package
-        - pynvjitlink >=0.2
+        - pynvjitlink >=0.6
     test:
       requires:
         - pip
@@ -200,6 +212,7 @@ outputs:
     build:
       force_ignore_keys:
         - cuda_compiler_version
+        - pytorch
       # This meta-package will have only one variant for each platform, but we want to run
       # the tests with both cuda and non-cuda, so no skips here.
     requirements:
@@ -227,6 +240,48 @@ outputs:
       license: Apache-2.0
       license_file: LICENSE
       summary: Install this meta-package to use nvmath-python cpu features
+      description: >-
+        This is a meta-package which installs a some optional dependencies. The main package is nvmath-python.
+
+  - name: nvmath-python-distributed
+    version: {{ version }}
+    build:
+      force_ignore_keys:
+        - cuda_compiler_version
+        - pytorch
+      # There will be only one variant of this meta-package for all platforms, but we want
+      # to run the tests with multiple variants of the base package.
+      # distributed support currently requires CUDA 12
+      skip: true  # [not (cuda_compiler_version or "").startswith("12")]
+      skip: true
+    requirements:
+      run:
+        - {{ pin_subpackage("nvmath-python", max_pin='x.x.x') }}
+        - mpi4py
+        - libcublasmp >=0.4.0
+        - libcufftmp
+        - libnvshmem3 >=3.2.5
+    test:
+      source_files:
+        - examples/distributed
+        - tests/example_tests
+      requires:
+        - pip
+        - pytest
+        - pytorch  # [not win]
+      imports:
+        - nvmath
+        - nvmath.distributed
+        - nvmath.distributed.fft
+      commands:
+        - pip check
+      {% if is_gpu_available %}
+        - mpiexec -n 2 pytest tests/example_tests/distributed_tests/ -v -ra
+      {% endif %}
+    about:
+      license: Apache-2.0
+      license_file: LICENSE
+      summary: Install this meta-package to use nvmath-python distributed features
       description: >-
         This is a meta-package which installs a some optional dependencies. The main package is nvmath-python.
 
