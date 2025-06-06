@@ -38,7 +38,7 @@ About nvmath-python-distributed
 
 Package license: Apache-2.0
 
-Summary: Install this meta-package to use nvmath-python cpu features
+Summary: Install this meta-package to use nvmath-python distributed features
 
 This is a meta-package which installs a some optional dependencies. The main package is nvmath-python.
 
