@@ -33,7 +33,7 @@ source:
 
 build:
   number: {{ number }}
-  skip: true  # [py < 310 or py > 312 or osx or ppc64le]
+  skip: true  # [py < 310 or py > 313 or osx or ppc64le]
 
 # Have certain top-level requirements so conda-smithy can render the correct variants
 requirements:
