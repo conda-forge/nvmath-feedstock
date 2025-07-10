@@ -1,6 +1,5 @@
 {% set version = "0.5.0" %}
 {% set number = 0 %}
-# FIXME: Uncomment pip checks
 
 {% if cuda_compiler_version in (None, "None", True, False) %}
   {% set cuda_major = 0 %}
@@ -22,7 +21,7 @@
 
 # In addition to switching this to true, GPU tests require enabling the rapidsai channel in
 # the build config
-{% set is_gpu_available = false %}
+{% set is_gpu_available = true %}
 
 package:
   name: nvmath-split
@@ -140,7 +139,7 @@ outputs:
         - nvmath.linalg
         - nvmath.sparse
       commands:
-        # - pip check
+        - pip check
 {% if is_gpu_available %}
         - pytest tests/example_tests/matmul_tests/ -k "not cpu" -v -ra  # [cuda_compiler_version != "None"]
         - pytest tests/example_tests/fft_tests/ -k "not (cpu or callback)" -v -ra  # [cuda_compiler_version != "None"]
@@ -201,7 +200,7 @@ outputs:
         - nvmath.linalg
         - nvmath.sparse
       commands:
-        # - pip check
+        - pip check
 {% if is_gpu_available %}
         - pytest tests/example_tests/device_tests/ -v -ra -k "simple or curand"
         - pytest tests/example_tests/fft_tests/ -k "callback" -v -ra
@@ -239,7 +238,7 @@ outputs:
         - nvmath.fft
         - nvmath.linalg
       commands:
-        # - pip check
+        - pip check
         # We can't run tests with CUDA builds because CuPy complains about no GPUs
         - pytest tests/example_tests/fft_tests/ -k cpu -v -ra  # [cuda_compiler_version == "None"]
     about:
@@ -278,7 +277,7 @@ outputs:
         - nvmath.distributed
         - nvmath.distributed.fft
       commands:
-        # - pip check
+        - pip check
       {% if is_gpu_available %}
         - mpiexec -n 2 pytest tests/nvmath_tests/distributed -v -ra
       {% endif %}
