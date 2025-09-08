@@ -1,4 +1,4 @@
-{% set version = "0.5.0" %}
+{% set version = "0.6.0" %}
 {% set number = 0 %}
 
 {% if cuda_compiler_version in (None, "None", True, False) %}
@@ -7,7 +7,7 @@
   {% set build_number = number %}
   {% set build_string = 'core' %}
 {% else %}
-  {% set cuda_major = environ.get("cuda_compiler_version", "11.8").split(".")[0] | int %}
+  {% set cuda_major = environ.get("cuda_compiler_version", "12.*").split(".")[0] | int %}
   {% set extras = "[sysctk" ~ cuda_major ~ "]" %}
   # Prioritize GPU builds
   {% set build_number = number + 200 %}
@@ -29,11 +29,15 @@ package:
 
 source:
   - url: https://github.com/NVIDIA/nvmath-python/archive/refs/tags/v{{ ".".join(version.split(".")[:3]) }}.tar.gz
-    sha256: 025d8647cc68073283771fbc37b4ccb78766d5049cf5509078567cbc5453d39b
+    sha256: d6578b8fcb25228c50009914e814cd5d73216841f5b61713a6f58b4ecf0bedad
+    patches:
+      - patches/0001-BUG-driver-load-failure-cpu.patch
 
 build:
   number: {{ number }}
   skip: true  # [py < 310 or py > 313 or osx or ppc64le]
+  # debugging skips:
+  # skip: true  # [py != 310]
 
 # Have certain top-level requirements so conda-smithy can render the correct variants
 requirements:
@@ -52,21 +56,20 @@ outputs:
     build:
       number: {{ build_number }}
       string: {{ build_string }}_py{{ py }}h{{ PKG_HASH }}_{{ build_number }}
-      skip: true  # [py < 310]
       script:
         # do nothing for CUDA 11, as CUDA_PATH is set in the CI images
-        - export CUDA_PATH=$BUILD_PREFIX/targets/x86_64-linux/   # [(cuda_compiler_version or "").startswith("12") and linux64]
-        - export CUDA_PATH=$BUILD_PREFIX/targets/sbsa-linux/     # [(cuda_compiler_version or "").startswith("12") and aarch64]
-        - set CUDA_PATH=%BUILD_PREFIX%\Library                   # [(cuda_compiler_version or "").startswith("12") and win64]
+        - export CUDA_PATH=$BUILD_PREFIX/targets/x86_64-linux/   # [cuda_compiler_version != "None" and linux64]
+        - export CUDA_PATH=$BUILD_PREFIX/targets/sbsa-linux/     # [cuda_compiler_version != "None" and aarch64]
+        - set CUDA_PATH=%BUILD_PREFIX%\Library                   # [cuda_compiler_version != "None" and win64]
         - export CUDA_PATH=$PREFIX/targets/x86_64-linux/         # [cuda_compiler_version == "None" and linux64]
         - export CUDA_PATH=$PREFIX/targets/sbsa-linux/           # [cuda_compiler_version == "None" and aarch64]
         - set CUDA_PATH=%PREFIX%\Library                         # [cuda_compiler_version == "None" and win64]
         - >-
           {{ PYTHON }} -m pip install --no-deps --no-build-isolation -v .{{ extras }}
       ignore_run_exports:
-        - cuda-version  # [cuda_compiler_version != "None"]
+        - cuda-version
       ignore_run_exports_from:
-        - cuda-cudart-dev  # [cuda_compiler_version == "None"]
+        - cuda-cudart-dev
       force_ignore_keys:
         - pytorch
     requirements:
@@ -77,49 +80,45 @@ outputs:
         - {{ stdlib('c') }}
         - cross-python_{{ target_platform }}     # [build_platform != target_platform]
         - python                                 # [build_platform != target_platform]
-        - cython >=3.0.4,<3.1                         # [build_platform != target_platform]
+        - cython >=3.0.4,!=3.1.0,!=3.1.1         # [build_platform != target_platform]
+        - cuda-profiler-api
       host:
         - python
+        - cython >=3.0.4,!=3.1.0,!=3.1.1
         - setuptools >=77.0.3
-        - wheel >=0.34.0
-        - packaging
+        - tomli>=2.0.1  # [py < 311]
         - pip
-        - cython >=3.0.4,<3.1
-        # We use headers from CUDA 12 for simplicity, but they can come from any version.
-        # On conda-forge using the CUDA 12 packages is more lightweight.
-        - cuda-version 12.*                      # [cuda_compiler_version == "None"]
-        - cuda-cudart-dev                        # [cuda_compiler_version == "None"]
-        - cuda-crt                               # [cuda_compiler_version == "None"]
-        - cuda-version {{ cuda_major }}.*        # [cuda_compiler_version != "None"]
+        - cuda-version {{ cuda_compiler_version }}      # [cuda_compiler_version != "None"]
+        - cuda-version {{ cuda_compiler_version_min }}  # [cuda_compiler_version == "None"]
+        - cuda-cudart-dev
+        - cuda-crt
+        - cuda-bindings
+        - cuda-profiler-api
       run:
         - python
         # requirements/pip/nvmath-python.txt
         - cuda-bindings
-        - cuda-core 0.3.*
+        - cuda-core >=0.3.2,<0.4
+        - cuda-pathfinder >=1.2.1,<2.0
         - numpy >=1.25,<3
         - pywin32                         # [win64]
         # requirements/pip/nvmath-python-cu12.txt
+        - cuda-bindings >=12.9.1,<13
+        - cuda-core >=0.3.2,<0.4
         - cupy                            # [cuda_compiler_version != "None"]  # TODO: remove me in the next release
-        - libcublas                       # [(cuda_compiler_version or "").startswith("12")]
-        - cuda-nvrtc                      # [(cuda_compiler_version or "").startswith("12")]
-        - cuda-cudart                     # [(cuda_compiler_version or "").startswith("12")]
-        - libcudss 0.5.0.16.*             # [(cuda_compiler_version or "").startswith("12")]
-        - libcufft                        # [(cuda_compiler_version or "").startswith("12")]
-        - libcurand                       # [(cuda_compiler_version or "").startswith("12")]
-        - libcusolver                     # [(cuda_compiler_version or "").startswith("12")]
-        - libcusparse                     # [(cuda_compiler_version or "").startswith("12")]
-        - cuda-version >=12.0.*,<13.0.a0  # [(cuda_compiler_version or "").startswith("12")]
-        # requirements/pip/nvmath-python-cu11.txt
-        - cudatoolkit                     # [(cuda_compiler_version or "").startswith("11")]
-        - cuda-version >=11.0.*,<12.0.a0  # [(cuda_compiler_version or "").startswith("11")]
+        - libcublas                       # [cuda_compiler_version != "None"]
+        - cuda-nvrtc                      # [cuda_compiler_version != "None"]
+        - cuda-cudart                     # [cuda_compiler_version != "None"]
+        - libcudss 0.5.0.16.*             # [cuda_compiler_version != "None"]
+        - libcufft                        # [cuda_compiler_version != "None"]
+        - libcurand                       # [cuda_compiler_version != "None"]
+        - libcusolver                     # [cuda_compiler_version != "None"]
+        - libcusparse                     # [cuda_compiler_version != "None"]
+        - {{ pin_compatible('cuda-version', max_pin='x', min_pin='x') }}  # [cuda_compiler_version != "None"]
       run_constrained:
         - cuda-version >=11.0.*,<13.a0    # [cuda_compiler_version == "None"]
         - libnvpl-fft0 >=0.3.0,<1.0a0
-        - libmathdx 0.2.*
         - mkl >=2024
-        - numba-cuda >=0.11.0
-        # run_constrained because this is an off-channel package
-        - pynvjitlink >=0.6
     test:
 {% if is_gpu_available %}
       source_files:
@@ -159,35 +158,26 @@ outputs:
         - pytorch
       # There will be only one variant of this meta-package for all platforms, but we want
       # to run the tests with multiple variants of the base package.
-      # dx only supports linux right now
-      # dx support currently requires CUDA 12
-      skip: true  # [(not linux) or (not (cuda_compiler_version or "").startswith("12"))]
+      skip: true  # [cuda_compiler_version == "None"]
     requirements:
       run:
-        - __linux
         - {{ pin_subpackage("nvmath-python", max_pin='x.x.x') }}
         - nvmath-python * cuda*
         # TODO: Move versions to run_constraints on the main package in next release; keep package names
         - cupy  # TODO: remove me in the next release
         - numba
-        - numba-cuda >=0.11.0
-        - cuda-python
+        - numba-cuda >=0.18.1
+        - cuda-cccl >12.4.127
         - cuda-nvcc
         - cuda-nvrtc !=12.4.*,!=12.5.0
-        - cuda-cudart-dev
-        - cuda-cccl >12.4.127
-        - libmathdx >=0.2.1,<0.3
+        - libmathdx >=0.2.3,<0.3
         - cuda-version >=12.0,!=12.4,!=12.5.0
         # Device APIs need headers for JIT compile
         - libcurand-dev
-      run_constrained:
-        # run_constrained because this is an off-channel package
-        - pynvjitlink >=0.6
     test:
       requires:
         - pip
 {% if is_gpu_available %}
-        - pynvjitlink
         - pytest
         - cffi
       source_files:
@@ -261,17 +251,19 @@ outputs:
       # There will be only one variant of this meta-package for all platforms, but we want
       # to run the tests with multiple variants of the base package.
       # distributed support currently requires CUDA 12
-      skip: true  # [not (cuda_compiler_version or "").startswith("12") or win]
+      skip: true  # [(cuda_compiler_version == "None") or win]
     requirements:
       run:
         - {{ pin_subpackage("nvmath-python", max_pin='x.x.x') }}
+        - nvmath-python * cuda*
         - mpi4py
         - libcublasmp >=0.4.0
         - libcufftmp
         - libnvshmem3 >=3.2.5
     test:
       source_files:
-        - tests/nvmath_tests/distributed
+        - examples/distributed
+        - tests/example_tests
       requires:
         - pip
         - pytest
@@ -286,7 +278,7 @@ outputs:
       commands:
         #  - pip check
       {% if is_gpu_available %}
-        - mpiexec -n 2 pytest tests/nvmath_tests/distributed -v -ra
+        - mpiexec -n 2 pytest tests/example_tests/distributed_tests -v -ra -k "not sync"
       {% endif %}
     about:
       license: Apache-2.0
