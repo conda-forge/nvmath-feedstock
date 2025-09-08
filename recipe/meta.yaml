@@ -21,7 +21,7 @@
 
 # In addition to switching this to true, GPU tests require enabling the rapidsai channel in
 # the build config
-{% set is_gpu_available = true %}
+{% set is_gpu_available = false %}
 
 package:
   name: nvmath-split
