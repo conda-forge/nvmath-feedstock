@@ -1,0 +1,46 @@
+From 21aa6f0ecf7f84f1419480c05505df7cbe2f0d7b Mon Sep 17 00:00:00 2001
+From: Daniel Ching <dching@nvidia.com>
+Date: Mon, 8 Sep 2025 13:11:31 -0500
+Subject: [PATCH] BUG: Guard against driver failures when testing no-gpu
+ environment
+
+---
+ tests/example_tests/test_utils.py   | 5 ++++-
+ tests/nvmath_tests/test_internal.py | 5 ++++-
+ 2 files changed, 8 insertions(+), 2 deletions(-)
+
+diff --git a/tests/example_tests/test_utils.py b/tests/example_tests/test_utils.py
+index f1027a87..e34f0820 100644
+--- a/tests/example_tests/test_utils.py
++++ b/tests/example_tests/test_utils.py
+@@ -24,7 +24,10 @@ else:
+     matplotlib.use("Agg")
+ import pytest
+ 
+-DEVICE_COUNT = ccx.system.num_devices
++try:
++    DEVICE_COUNT = ccx.system.num_devices
++except:
++    DEVICE_COUNT = 0
+ 
+ 
+ class SampleTestError(Exception):
+diff --git a/tests/nvmath_tests/test_internal.py b/tests/nvmath_tests/test_internal.py
+index c457f7a1..f3466a27 100644
+--- a/tests/nvmath_tests/test_internal.py
++++ b/tests/nvmath_tests/test_internal.py
+@@ -12,7 +12,10 @@ import pytest
+ from hypothesis import given, strategies as st
+ from nvmath.internal import package_wrapper, tensor_wrapper, utils
+ 
+-_device_count = ccx.system.num_devices
++try:
++    _device_count = ccx.system.num_devices
++except:
++    _device_count = 0
+ 
+ _cupy_available = False
+ try:
+-- 
+2.47.1.windows.2
+
