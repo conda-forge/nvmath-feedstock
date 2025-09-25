@@ -9,10 +9,10 @@ channel_targets:
 cuda_compiler:
 - cuda-nvcc
 cuda_compiler_version:
-- '12.6'
+- '12.9'
 - None
 cuda_compiler_version_min:
-- '12.6'
+- '12.9'
 cxx_compiler:
 - vs2022
 pin_run_as_build:
