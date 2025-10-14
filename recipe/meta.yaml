@@ -70,6 +70,7 @@ outputs:
         - cuda-version
       ignore_run_exports_from:
         - cuda-cudart-dev
+        - cuda-bindings
       force_ignore_keys:
         - pytorch
     requirements:
