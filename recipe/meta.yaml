@@ -68,9 +68,9 @@ outputs:
           {{ PYTHON }} -m pip install --no-deps --no-build-isolation -v .{{ extras }}
       ignore_run_exports:
         - cuda-version
+        - cuda-python
       ignore_run_exports_from:
         - cuda-cudart-dev
-        - cuda-bindings
       force_ignore_keys:
         - pytorch
     requirements:
