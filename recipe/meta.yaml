@@ -86,7 +86,7 @@ outputs:
         - python
         - cython >=3.0.4,!=3.1.0,!=3.1.1
         - setuptools >=77.0.3
-        - tomli>=2.0.1  # [py < 311]
+        - tomli >=2.0.1  # [py < 311]
         - pip
         - cuda-version {{ cuda_compiler_version }}      # [cuda_compiler_version != "None"]
         - cuda-version {{ cuda_compiler_version_min }}  # [cuda_compiler_version == "None"]
