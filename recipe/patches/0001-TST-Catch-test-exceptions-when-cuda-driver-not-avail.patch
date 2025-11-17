@@ -1,0 +1,57 @@
+From 1c769df3d84d511d53cc12bc1980859c7bad91e0 Mon Sep 17 00:00:00 2001
+From: Daniel Ching <dching@nvidia.com>
+Date: Mon, 17 Nov 2025 14:06:02 -0600
+Subject: [PATCH] TST: Catch test exceptions when cuda driver not available
+
+---
+ .../matmul_tests/test_advanced_matmul_samples.py      | 11 +++++++----
+ .../matmul_tests/test_generic_matmul_samples.py       | 11 +++++++----
+ 2 files changed, 14 insertions(+), 8 deletions(-)
+
+diff --git a/tests/example_tests/matmul_tests/test_advanced_matmul_samples.py b/tests/example_tests/matmul_tests/test_advanced_matmul_samples.py
+index a2bef055..569795c3 100644
+--- a/tests/example_tests/matmul_tests/test_advanced_matmul_samples.py
++++ b/tests/example_tests/matmul_tests/test_advanced_matmul_samples.py
+@@ -63,10 +63,13 @@ min_cc = {
+     "example28_mxfp8_epilog.py": (10, 0),
+     "example29_mxfp8_layout.py": (10, 0),
+ }
+-
+-cublas_version = bindings.cublasLt.get_version()
+-device_properties = ccx.Device().properties
+-cc = (device_properties.compute_capability_major, device_properties.compute_capability_minor)
++try:
++    cublas_version = bindings.cublasLt.get_version()
++    device_properties = ccx.Device().properties
++    cc = (device_properties.compute_capability_major, device_properties.compute_capability_minor)
++except:
++    cublas_version = 0
++    cc = (0, 0)
+ 
+ 
+ @pytest.mark.parametrize("sample", sample_files)
+diff --git a/tests/example_tests/matmul_tests/test_generic_matmul_samples.py b/tests/example_tests/matmul_tests/test_generic_matmul_samples.py
+index d694202a..b932b9a9 100644
+--- a/tests/example_tests/matmul_tests/test_generic_matmul_samples.py
++++ b/tests/example_tests/matmul_tests/test_generic_matmul_samples.py
+@@ -28,10 +28,13 @@ min_cc = {}
+ test_requires_nvpl = {
+     "example04_stateful_torch_cpu.py": True,
+ }
+-
+-cublas_version = bindings.cublasLt.get_version()
+-device_properties = ccx.Device().properties
+-cc = (device_properties.compute_capability_major, device_properties.compute_capability_minor)
++try:
++    cublas_version = bindings.cublasLt.get_version()
++    device_properties = ccx.Device().properties
++    cc = (device_properties.compute_capability_major, device_properties.compute_capability_minor)
++except:
++    cublas_version = 0
++    cc = (0, 0)
+ 
+ try:
+     from nvmath.bindings.nvpl.blas import get_version
+-- 
+2.51.0
+
