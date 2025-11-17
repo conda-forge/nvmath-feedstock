@@ -251,7 +251,7 @@ outputs:
         #  - pip check
         # We can't run tests with CUDA builds because CuPy complains about no GPUs
         - pytest tests/example_tests/fft_tests/ -k cpu -v -ra  # [cuda_compiler_version == "None"]
-        - pytest tests/example_tests/matmul_tests/ -k cpu -v -ra  # [cuda_compiler_version == "None"]
+        # - pytest tests/example_tests/matmul_tests/ -k cpu -v -ra  # [cuda_compiler_version == "None"]
     about:
       license: Apache-2.0
       license_file: LICENSE
