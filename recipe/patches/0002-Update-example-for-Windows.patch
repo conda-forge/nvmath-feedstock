@@ -1,0 +1,76 @@
+From cbe6b36ba2d9ed76e1a48000ffa6cc331f16c20a Mon Sep 17 00:00:00 2001
+From: Daniel Ching <dching@nvidia.com>
+Date: Mon, 17 Nov 2025 14:53:08 -0600
+Subject: [PATCH] DOC: Update FFT CPU examples for Windows
+
+---
+ examples/fft/example01_numpy_cpu_execution.py         | 11 +++++++++--
+ examples/fft/example08_numpy_inplace_cpu_execution.py | 11 +++++++++--
+ 2 files changed, 18 insertions(+), 4 deletions(-)
+
+diff --git a/examples/fft/example01_numpy_cpu_execution.py b/examples/fft/example01_numpy_cpu_execution.py
+index 900bd4a3..7bd6ce2c 100644
+--- a/examples/fft/example01_numpy_cpu_execution.py
++++ b/examples/fft/example01_numpy_cpu_execution.py
+@@ -20,6 +20,8 @@ The input as well as the result from the FFT operations are NumPy ndarrays, resu
+ in effortless interoperability between nvmath-python and NumPy.
+ """
+
++import os
++
+ import numpy as np
+
+ import nvmath
+@@ -30,9 +32,14 @@ axes = 0, 1
+ # NumPy ndarray, on the CPU.
+ a = np.random.rand(*shape) + 1j * np.random.rand(*shape)
+
++# On Windows, we must use ExecutionCPU with num_threads specified.
++# Use half the available cores, but at least 1 thread.
++num_threads = max(1, os.cpu_count() // 2)
++execution_cpu = nvmath.fft.ExecutionCPU(num_threads=num_threads)
++
+ # Forward FFT along the specified axes, batched along the complement.
+-b = nvmath.fft.fft(a, axes=axes)
++b = nvmath.fft.fft(a, axes=axes, execution=execution_cpu)
+ # For cpu arrays, the two calls are equivalent.
+-c = nvmath.fft.fft(a, axes=axes, execution="cpu")
++c = nvmath.fft.fft(a, axes=axes, execution=execution_cpu)
+
+ print(f"Input type = {type(a)}, FFT b output type = {type(b)}, FFT c output type = {type(c)}.")
+diff --git a/examples/fft/example08_numpy_inplace_cpu_execution.py b/examples/fft/example08_numpy_inplace_cpu_execution.py
+index d5d9db33..27394972 100644
+--- a/examples/fft/example08_numpy_inplace_cpu_execution.py
++++ b/examples/fft/example08_numpy_inplace_cpu_execution.py
+@@ -21,6 +21,8 @@ The input as well as the result from the FFT operations are NumPy ndarrays, resu
+ effortless interoperability between nvmath-python and NumPy.
+ """
+
++import os
++
+ import numpy as np
+
+ import nvmath
+@@ -31,12 +33,17 @@ axes = 0, 1
+ a = np.ones(shape, dtype=np.complex64)
+ a_copy = a.copy()  # Since `a` is overwritten.
+
++# On Windows, we must use ExecutionCPU with num_threads specified.
++# Use half the available cores, but at least 1 thread.
++num_threads = max(1, os.cpu_count() // 2)
++execution_cpu = nvmath.fft.ExecutionCPU(num_threads=num_threads)
++
+ # Forward FFT along (0,1), batched along axis=2.
+-b = nvmath.fft.fft(a, axes=axes, options={"inplace": True})
++b = nvmath.fft.fft(a, axes=axes, options={"inplace": True}, execution=execution_cpu)
+ assert b is a  # `a` is overwritten
+
+ # Inverse FFT along (0,1), batched along axis=2.
+-c = nvmath.fft.ifft(b, axes=axes, options={"inplace": True})
++c = nvmath.fft.ifft(b, axes=axes, options={"inplace": True}, execution=execution_cpu)
+ assert c is b  # `b`` is again overwritten
+
+ print(f"Input type = {type(a)}, FFT type = {type(b)}, IFFT type = {type(c)}")
+--
+2.47.1.windows.2
+
