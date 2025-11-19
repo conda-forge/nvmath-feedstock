@@ -1,16 +1,16 @@
 {% set version = "0.7.0" %}
-{% set number = 2 %}
+{% set build = 3 %}
 
 {% if cuda_compiler_version in (None, "None", True, False) %}
   {% set cuda_major = 0 %}
   {% set extras = "" %}
-  {% set build_number = number %}
+  {% set build_number = build %}
   {% set build_string = 'core' %}
 {% else %}
   {% set cuda_major = environ.get("cuda_compiler_version", "12.*").split(".")[0] | int %}
   {% set extras = "[sysctk" ~ cuda_major ~ "]" %}
   # Prioritize GPU builds
-  {% set build_number = number + 200 %}
+  {% set build_number = build + 200 %}
   {% set build_string = 'cuda' ~ cuda_major %}
 {% endif %}
 
@@ -36,7 +36,7 @@ source:
       - patches/0002-Update-example-for-Windows.patch  # [win]
 
 build:
-  number: {{ number }}
+  number: {{ build }}
   skip: true  # [py < 310 or py > 313 or osx or ppc64le]
   # debugging skips:
   # skip: true  # [py != 310]
