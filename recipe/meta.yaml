@@ -106,6 +106,7 @@ outputs:
         - examples/fft
         - examples/linalg
         - examples/sparse
+        - examples/tensor
         - tests/example_tests
       requires:
         - cupy
@@ -122,9 +123,10 @@ outputs:
         - nvmath.tensor
       commands:
         - pip check
-        - pytest tests/example_tests/matmul_tests/ -k "not cpu" -v -ra  # [is_gpu_available]
-        - pytest tests/example_tests/fft_tests/ -k "not (cpu or callback)" -v -ra  # [is_gpu_available]
-        - pytest tests/example_tests/sparse_tests/ -k "not cpu" -v -ra  # [is_gpu_available]
+        - pytest tests/example_tests/matmul_tests/ -k "example01 and not cpu" -v -ra  # [is_gpu_available]
+        - pytest tests/example_tests/fft_tests/ -k "example01 and not (cpu or callback)" -v -ra  # [is_gpu_available]
+        - pytest tests/example_tests/sparse_tests/ -k "example01" -v -ra  # [is_gpu_available]
+        - pytest tests/example_tests/tensor_tests/ -k "example01" -v -ra  # [is_gpu_available]
 
   - name: nvmath-python-dx
     build:
@@ -148,7 +150,9 @@ outputs:
       requires:
         - pip
         - pytest  # [is_gpu_available]
+        - cccl-python  # [is_gpu_available]
         - cffi  # [is_gpu_available]
+        - cupy
       source_files:
         - examples/device
         - examples/fft/*callback*.py
@@ -161,7 +165,7 @@ outputs:
         - nvmath.sparse
       commands:
         - pip check
-        - pytest tests/example_tests/device_tests/ -v -ra -k "simple or curand"  # [is_gpu_available]
+        - pytest tests/example_tests/device_tests/ -v -ra -k "fp or curand"  # [is_gpu_available]
         - pytest tests/example_tests/fft_tests/ -k "callback" -v -ra  # [is_gpu_available]
     about:
       license: Apache-2.0
@@ -241,8 +245,8 @@ outputs:
         This is a meta-package which installs a some optional dependencies. The main package is nvmath-python.
 
   - name: nvmath-python-install-test-12
-    build:
-      skip: true
+    build:        # [not is_gpu_available]
+      skip: true  # [not is_gpu_available]
     requirements:
       run:
         - cuda-version 12.*
@@ -261,8 +265,8 @@ outputs:
         - nvmath.tensor
 
   - name: nvmath-python-install-test-13
-    build:
-      skip: true
+    build:        # [not is_gpu_available]
+      skip: true  # [not is_gpu_available]
     requirements:
       run:
         - cuda-version 13.*
@@ -270,6 +274,8 @@ outputs:
         - nvmath-python-cpu
         - nvmath-python-dx
         - nvmath-python-distributed
+        - cupy
+        - pytorch-gpu
     test:
       imports:
         - nvmath
@@ -279,6 +285,8 @@ outputs:
         - nvmath.linalg
         - nvmath.sparse
         - nvmath.tensor
+        - cupy
+        - pytorch-gpu
 
 about:
   home: https://developer.nvidia.com/nvmath-python
