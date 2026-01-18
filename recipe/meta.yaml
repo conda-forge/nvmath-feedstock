@@ -1,5 +1,5 @@
-{% set version = "0.7.0" %}
-{% set build = 3 %}
+{% set version = "0.8.0" %}
+{% set build = 0 %}
 
 {% if cuda_compiler_version in (None, "None", True, False) %}
   {% set cuda_major = 0 %}
@@ -29,7 +29,7 @@ package:
 
 source:
   - url: https://github.com/NVIDIA/nvmath-python/archive/refs/tags/v{{ ".".join(version.split(".")[:3]) }}.tar.gz
-    sha256: 822d20b5001536126153bb64ee7f1e53360a7d68cef0f97640a2bea9fd54aa40
+    sha256: 43171461f9e7902fd42d5754481b11c36e58a0b282f55b7f0b14b0a1de649094
     patches:
       - patches/0001-BUG-driver-load-failure-cpu.patch
       - patches/0001-TST-Catch-test-exceptions-when-cuda-driver-not-avail.patch
