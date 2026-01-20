@@ -13,6 +13,8 @@ package:
 source:
   - url: https://github.com/NVIDIA/nvmath-python/archive/refs/tags/v{{ ".".join(version.split(".")[:3]) }}.tar.gz
     sha256: 43171461f9e7902fd42d5754481b11c36e58a0b282f55b7f0b14b0a1de649094
+    patches:
+      - patches/0002-Update-example-for-Windows.patch  # [win]
 
 build:
   number: {{ build }}
