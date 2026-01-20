@@ -154,6 +154,7 @@ outputs:
         - cccl-python  # [is_gpu_available]
         - cffi  # [is_gpu_available]
         - cupy
+        - scipy  # [win]
       source_files:
         - examples/device
         - examples/fft/*callback*.py
@@ -211,6 +212,7 @@ outputs:
 
   - name: nvmath-python-distributed
     build:
+      skip: true  # [win]
       force_ignore_keys:
         - pytorch
     requirements:
@@ -254,12 +256,12 @@ outputs:
         - nvmath-python
         - nvmath-python-cpu
         - nvmath-python-dx
-        - nvmath-python-distributed
+        - nvmath-python-distributed  # [not win]
     test:
       imports:
         - nvmath
-        - nvmath.distributed
-        - nvmath.distributed.fft
+        - nvmath.distributed  # [not win]
+        - nvmath.distributed.fft  # [not win]
         - nvmath.fft
         - nvmath.linalg
         - nvmath.sparse
@@ -274,14 +276,14 @@ outputs:
         - nvmath-python
         - nvmath-python-cpu
         - nvmath-python-dx
-        - nvmath-python-distributed
+        - nvmath-python-distributed  # [not win]
         - cupy
-        - pytorch-gpu
+        # - pytorch-gpu
     test:
       imports:
         - nvmath
-        - nvmath.distributed
-        - nvmath.distributed.fft
+        - nvmath.distributed  # [not win]
+        - nvmath.distributed.fft  # [not win]
         - nvmath.fft
         - nvmath.linalg
         - nvmath.sparse
