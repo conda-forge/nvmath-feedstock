@@ -59,8 +59,6 @@ outputs:
         - cuda-profiler-api                      # [build_platform != target_platform]
       host:
         - cuda-bindings {{ cuda_compiler_version }}
-        - cuda-crt
-        - cuda-cudart-dev
         - cuda-profiler-api
         - cuda-version {{ cuda_compiler_version }}
         - cython >=3.2.0
