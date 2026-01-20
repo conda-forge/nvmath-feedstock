@@ -172,8 +172,6 @@ Current release info
 | [![Conda Recipe](https://img.shields.io/badge/recipe-nvmath--python--cpu-green.svg)](https://anaconda.org/conda-forge/nvmath-python-cpu) | [![Conda Downloads](https://img.shields.io/conda/dn/conda-forge/nvmath-python-cpu.svg)](https://anaconda.org/conda-forge/nvmath-python-cpu) | [![Conda Version](https://img.shields.io/conda/vn/conda-forge/nvmath-python-cpu.svg)](https://anaconda.org/conda-forge/nvmath-python-cpu) | [![Conda Platforms](https://img.shields.io/conda/pn/conda-forge/nvmath-python-cpu.svg)](https://anaconda.org/conda-forge/nvmath-python-cpu) |
 | [![Conda Recipe](https://img.shields.io/badge/recipe-nvmath--python--distributed-green.svg)](https://anaconda.org/conda-forge/nvmath-python-distributed) | [![Conda Downloads](https://img.shields.io/conda/dn/conda-forge/nvmath-python-distributed.svg)](https://anaconda.org/conda-forge/nvmath-python-distributed) | [![Conda Version](https://img.shields.io/conda/vn/conda-forge/nvmath-python-distributed.svg)](https://anaconda.org/conda-forge/nvmath-python-distributed) | [![Conda Platforms](https://img.shields.io/conda/pn/conda-forge/nvmath-python-distributed.svg)](https://anaconda.org/conda-forge/nvmath-python-distributed) |
 | [![Conda Recipe](https://img.shields.io/badge/recipe-nvmath--python--dx-green.svg)](https://anaconda.org/conda-forge/nvmath-python-dx) | [![Conda Downloads](https://img.shields.io/conda/dn/conda-forge/nvmath-python-dx.svg)](https://anaconda.org/conda-forge/nvmath-python-dx) | [![Conda Version](https://img.shields.io/conda/vn/conda-forge/nvmath-python-dx.svg)](https://anaconda.org/conda-forge/nvmath-python-dx) | [![Conda Platforms](https://img.shields.io/conda/pn/conda-forge/nvmath-python-dx.svg)](https://anaconda.org/conda-forge/nvmath-python-dx) |
-| [![Conda Recipe](https://img.shields.io/badge/recipe-nvmath--python--install--test--12-green.svg)](https://anaconda.org/conda-forge/nvmath-python-install-test-12) | [![Conda Downloads](https://img.shields.io/conda/dn/conda-forge/nvmath-python-install-test-12.svg)](https://anaconda.org/conda-forge/nvmath-python-install-test-12) | [![Conda Version](https://img.shields.io/conda/vn/conda-forge/nvmath-python-install-test-12.svg)](https://anaconda.org/conda-forge/nvmath-python-install-test-12) | [![Conda Platforms](https://img.shields.io/conda/pn/conda-forge/nvmath-python-install-test-12.svg)](https://anaconda.org/conda-forge/nvmath-python-install-test-12) |
-| [![Conda Recipe](https://img.shields.io/badge/recipe-nvmath--python--install--test--13-green.svg)](https://anaconda.org/conda-forge/nvmath-python-install-test-13) | [![Conda Downloads](https://img.shields.io/conda/dn/conda-forge/nvmath-python-install-test-13.svg)](https://anaconda.org/conda-forge/nvmath-python-install-test-13) | [![Conda Version](https://img.shields.io/conda/vn/conda-forge/nvmath-python-install-test-13.svg)](https://anaconda.org/conda-forge/nvmath-python-install-test-13) | [![Conda Platforms](https://img.shields.io/conda/pn/conda-forge/nvmath-python-install-test-13.svg)](https://anaconda.org/conda-forge/nvmath-python-install-test-13) |
 
 Installing nvmath
 =================
@@ -185,16 +183,16 @@ conda config --add channels conda-forge
 conda config --set channel_priority strict
 ```
 
-Once the `conda-forge` channel has been enabled, `nvmath-python, nvmath-python-core, nvmath-python-cpu, nvmath-python-distributed, nvmath-python-dx, nvmath-python-install-test-12, nvmath-python-install-test-13` can be installed with `conda`:
+Once the `conda-forge` channel has been enabled, `nvmath-python, nvmath-python-core, nvmath-python-cpu, nvmath-python-distributed, nvmath-python-dx` can be installed with `conda`:
 
 ```
-conda install nvmath-python nvmath-python-core nvmath-python-cpu nvmath-python-distributed nvmath-python-dx nvmath-python-install-test-12 nvmath-python-install-test-13
+conda install nvmath-python nvmath-python-core nvmath-python-cpu nvmath-python-distributed nvmath-python-dx
 ```
 
 or with `mamba`:
 
 ```
-mamba install nvmath-python nvmath-python-core nvmath-python-cpu nvmath-python-distributed nvmath-python-dx nvmath-python-install-test-12 nvmath-python-install-test-13
+mamba install nvmath-python nvmath-python-core nvmath-python-cpu nvmath-python-distributed nvmath-python-dx
 ```
 
 It is possible to list all of the versions of `nvmath-python` available on your platform with `conda`:
