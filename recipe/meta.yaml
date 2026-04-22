@@ -1,4 +1,4 @@
-{% set version = "0.8.0" %}
+{% set version = "0.9.0" %}
 {% set build = 0 %}
 
 # {{ PYTHON }} is not resolved properly in multi-output recipes...
@@ -12,7 +12,7 @@ package:
 
 source:
   - url: https://github.com/NVIDIA/nvmath-python/archive/refs/tags/v{{ ".".join(version.split(".")[:3]) }}.tar.gz
-    sha256: 43171461f9e7902fd42d5754481b11c36e58a0b282f55b7f0b14b0a1de649094
+    sha256: 58479b53803ec8590b768f22f6d76558168ba0193bc40cb175001417b9c01e45
     patches:
       - patches/0002-Update-example-for-Windows.patch  # [win]
 
@@ -248,7 +248,7 @@ outputs:
         This is a meta-package which installs a some optional dependencies. The main package is nvmath-python.
 
   - name: nvmath-python-install-test-12
-    build:        # [not is_gpu_available]
+    build:   # [not is_gpu_available]
       skip: true  # [not is_gpu_available]
     requirements:
       run:
@@ -268,7 +268,7 @@ outputs:
         - nvmath.tensor
 
   - name: nvmath-python-install-test-13
-    build:        # [not is_gpu_available]
+    build:   # [not is_gpu_available]
       skip: true  # [not is_gpu_available]
     requirements:
       run:
