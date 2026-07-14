@@ -69,8 +69,8 @@ outputs:
         - cuda-version >=12,<14.0a0
         # pyproject.toml/dependencies
         - cuda-bindings
-        - cuda-core >=0.4.2,<1.0
-        - cuda-pathfinder >=1.4.4,<2.0
+        - cuda-core >=0.5.0,<2
+        - cuda-pathfinder >=1.5.1,<2.0
         - numpy >=1.25,<3
         - python
         - pywin32  # [win64]
@@ -94,7 +94,7 @@ outputs:
         - libcublas
         - cuda-nvrtc
         - cuda-cudart
-        - libcudss 0.7.*
+        - libcudss 0.8.*
         - libcufft
         - libcurand
         - libcusolver
@@ -131,8 +131,11 @@ outputs:
       run:
         - {{ pin_subpackage("nvmath-python", max_pin='x.x.x') }}
         # pyproject.toml/project/optional-dependencies/numba
+        - cffi
+        - llvmlite
         - numba
-        - numba-cuda >=0.28.1
+        - numba-cuda >=0.28.1,<1
+        - numba-cuda-mlir >=0.4.1,<1  # [py >= 311]
 
   - name: nvmath-python-dx
     build:
@@ -224,10 +227,13 @@ outputs:
         - {{ pin_subpackage("nvmath-python-core", max_pin='x.x.x') }}
         - {{ pin_subpackage("nvmath-python", max_pin='x.x.x') }}
         - nccl >=2.29.2
-        - nccl4py
-        - libcublasmp >=0.8.1,<1
+        - nccl4py >=0.3.1,<0.4
+        - libcublasmp >=0.8.1,<0.10
         - libcufftmp
+        - libcusolvermp >=0.8.0,<0.10
         - libnvshmem3 >=3.2.5
+      run_constrained:
+        - libcublas !=13.0.0.*,!=13.0.1.*
     test:
       source_files:
         - examples/distributed
