@@ -230,7 +230,7 @@ outputs:
         - nccl4py >=0.3.1,<0.4
         - libcublasmp >=0.8.1,<0.10
         - libcufftmp
-        - libcusolvermp >=0.8.0,<0.10
+        - libcusolvermp0 >=0.8.0,<0.10
         - libnvshmem3 >=3.2.5
       run_constrained:
         - libcublas !=13.0.0.*,!=13.0.1.*
