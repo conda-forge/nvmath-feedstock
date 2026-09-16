@@ -8,10 +8,10 @@ jobs:
     vmImage: ubuntu-latest
   strategy:
     matrix:
-      linux_aarch64_cuda_compiler_version13.2python3.10.____cpython:
-        CONFIG: linux_aarch64_cuda_compiler_version13.2python3.10.____cpython
+      ? linux_aarch64_c_compiler_version15c_stdlib_version2.28cuda_compiler_version13.4cxx_compiler_version15python3.11.____cpython
+      : CONFIG: linux_aarch64_c_compiler_version15c_stdlib_version2.28cuda_compiler_version13.4cxx_compiler_version15python3.11.____cpython
         UPLOAD_PACKAGES: 'True'
-        DOCKER_IMAGE: quay.io/condaforge/linux-anvil-aarch64:alma9
+        DOCKER_IMAGE: quay.io/condaforge/linux-anvil-aarch64:alma10
         docker_run_args: ''
         build_workspace_dir: build_artifacts
         free_disk_space: quick
@@ -19,10 +19,10 @@ jobs:
         resize_partitions: false
         store_build_artifacts: false
         tools_install_dir: ~/miniforge3
-      linux_aarch64_cuda_compiler_version13.2python3.11.____cpython:
-        CONFIG: linux_aarch64_cuda_compiler_version13.2python3.11.____cpython
+      ? linux_aarch64_c_compiler_version15c_stdlib_version2.28cuda_compiler_version13.4cxx_compiler_version15python3.12.____cpython
+      : CONFIG: linux_aarch64_c_compiler_version15c_stdlib_version2.28cuda_compiler_version13.4cxx_compiler_version15python3.12.____cpython
         UPLOAD_PACKAGES: 'True'
-        DOCKER_IMAGE: quay.io/condaforge/linux-anvil-aarch64:alma9
+        DOCKER_IMAGE: quay.io/condaforge/linux-anvil-aarch64:alma10
         docker_run_args: ''
         build_workspace_dir: build_artifacts
         free_disk_space: quick
@@ -30,10 +30,10 @@ jobs:
         resize_partitions: false
         store_build_artifacts: false
         tools_install_dir: ~/miniforge3
-      linux_aarch64_cuda_compiler_version13.2python3.12.____cpython:
-        CONFIG: linux_aarch64_cuda_compiler_version13.2python3.12.____cpython
+      linux_aarch64_c_compiler_version15c_stdlib_version2.28cuda_compiler_version13.4cxx_compiler_version15python3.13.____cp313:
+        CONFIG: linux_aarch64_c_compiler_version15c_stdlib_version2.28cuda_compiler_version13.4cxx_compiler_version15python3.13.____cp313
         UPLOAD_PACKAGES: 'True'
-        DOCKER_IMAGE: quay.io/condaforge/linux-anvil-aarch64:alma9
+        DOCKER_IMAGE: quay.io/condaforge/linux-anvil-aarch64:alma10
         docker_run_args: ''
         build_workspace_dir: build_artifacts
         free_disk_space: quick
@@ -41,10 +41,10 @@ jobs:
         resize_partitions: false
         store_build_artifacts: false
         tools_install_dir: ~/miniforge3
-      linux_aarch64_cuda_compiler_version13.2python3.13.____cp313:
-        CONFIG: linux_aarch64_cuda_compiler_version13.2python3.13.____cp313
+      linux_aarch64_c_compiler_version15c_stdlib_version2.28cuda_compiler_version13.4cxx_compiler_version15python3.14.____cp314:
+        CONFIG: linux_aarch64_c_compiler_version15c_stdlib_version2.28cuda_compiler_version13.4cxx_compiler_version15python3.14.____cp314
         UPLOAD_PACKAGES: 'True'
-        DOCKER_IMAGE: quay.io/condaforge/linux-anvil-aarch64:alma9
+        DOCKER_IMAGE: quay.io/condaforge/linux-anvil-aarch64:alma10
         docker_run_args: ''
         build_workspace_dir: build_artifacts
         free_disk_space: quick
