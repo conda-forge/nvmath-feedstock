@@ -161,11 +161,14 @@ outputs:
         - cccl-python  # [is_gpu_available]
         - cffi  # [is_gpu_available]
         - cupy
-        - scipy  # [win]
+        - scipy
+        - psutil
       source_files:
         - examples/device
         - examples/fft/*callback*.py
+        - examples/fft/common.py
         - tests/example_tests
+        - tests/nvmath_tests/device/helpers*
       imports:
         - nvmath.device  # [is_gpu_available]
         - nvmath
@@ -174,7 +177,10 @@ outputs:
         - nvmath.sparse
       commands:
         - pip check
-        - pytest tests/example_tests/device_tests/ -v -ra -k "fp or curand"  # [is_gpu_available]
+        # numba_cuda and numba_cuda_mlir examples each have their own common_numba.py;
+        # sharing one process lets the first-imported one win sys.modules and break the other
+        - pytest tests/example_tests/device_tests/ -v -ra -k "(fp or curand) and not mlir"  # [is_gpu_available]
+        - pytest tests/example_tests/device_tests/ -v -ra -k "(fp or curand) and mlir"  # [is_gpu_available]
         - pytest tests/example_tests/fft_tests/ -k "callback" -v -ra  # [is_gpu_available]
     about:
       license: Apache-2.0
@@ -243,13 +249,14 @@ outputs:
         - pytest
         - pytorch  # [not win]
         - pytorch-gpu  # [not win and is_gpu_available]
+        # - cuda-core >=1.2
       imports:
         - nvmath
         - nvmath.distributed
         - nvmath.distributed.fft
       commands:
         - pip check
-        # - mpiexec -n 2 pytest tests/example_tests/distributed_tests -v -ra -k "not sync"  # [is_gpu_available]
+        - mpiexec -n 2 pytest tests/example_tests/distributed_tests -v -ra -k "not sync"  # [is_gpu_available]
     about:
       license: Apache-2.0
       license_file: LICENSE
@@ -267,6 +274,7 @@ outputs:
         - nvmath-python-cpu
         - nvmath-python-dx
         - nvmath-python-distributed  # [not win]
+        - pytorch-gpu
     test:
       imports:
         - nvmath
@@ -288,7 +296,6 @@ outputs:
         - nvmath-python-dx
         - nvmath-python-distributed  # [not win]
         - cupy
-        # - pytorch-gpu
     test:
       imports:
         - nvmath
@@ -299,7 +306,6 @@ outputs:
         - nvmath.sparse
         - nvmath.tensor
         - cupy
-        - pytorch-gpu
 
 about:
   home: https://developer.nvidia.com/nvmath-python
