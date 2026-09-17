@@ -275,7 +275,8 @@ outputs:
         - nvmath-python-cpu
         - nvmath-python-dx
         - nvmath-python-distributed  # [not win]
-        - pytorch-gpu
+        # Not compatible because cuDSS
+        # - pytorch-gpu
     test:
       imports:
         - nvmath
@@ -297,6 +298,7 @@ outputs:
         - nvmath-python-dx
         - nvmath-python-distributed  # [not win]
         - cupy
+        - pytorch-gpu
     test:
       imports:
         - nvmath
