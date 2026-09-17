@@ -123,6 +123,7 @@ outputs:
         # - pip check
         - pytest tests/example_tests/matmul_tests/ -k "example01 and not cpu" -v -ra  # [is_gpu_available]
         - pytest tests/example_tests/fft_tests/ -k "example01 and not (cpu or callback)" -v -ra  # [is_gpu_available]
+        - pytest tests/example_tests/solver_tests/ -k "example01" -v -ra  # [is_gpu_available]
         - pytest tests/example_tests/sparse_tests/ -k "example01" -v -ra  # [is_gpu_available]
         - pytest tests/example_tests/tensor_tests/ -k "example01" -v -ra  # [is_gpu_available]
 
@@ -196,7 +197,7 @@ outputs:
     requirements:
       run:
         - {{ pin_subpackage("nvmath-python-core", max_pin='x.x.x') }}
-        - mkl >=2024,<2026  # [x86_64 or linux64]
+        - mkl >=2024,<2027  # [x86_64 or linux64]
         - libnvpl-fft0 >=0.3,<1  # [arm64 or aarch64]
         - libnvpl-blas0 >=0.3,<1  # [arm64 or aarch64]
     test:
@@ -309,6 +310,7 @@ outputs:
         - nvmath.sparse
         - nvmath.tensor
         - cupy
+        - torch
 
 about:
   home: https://developer.nvidia.com/nvmath-python
