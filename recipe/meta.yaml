@@ -245,6 +245,7 @@ outputs:
         - examples/distributed
         - tests/example_tests
       requires:
+        - openmpi
         - pip
         - pytest
         - pytorch  # [not win]
