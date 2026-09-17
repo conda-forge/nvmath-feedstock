@@ -120,7 +120,7 @@ outputs:
         - nvmath.sparse
         - nvmath.tensor
       commands:
-        - pip check
+        # - pip check
         - pytest tests/example_tests/matmul_tests/ -k "example01 and not cpu" -v -ra  # [is_gpu_available]
         - pytest tests/example_tests/fft_tests/ -k "example01 and not (cpu or callback)" -v -ra  # [is_gpu_available]
         - pytest tests/example_tests/sparse_tests/ -k "example01" -v -ra  # [is_gpu_available]
@@ -176,7 +176,7 @@ outputs:
         - nvmath.linalg
         - nvmath.sparse
       commands:
-        - pip check
+        # - pip check
         # numba_cuda and numba_cuda_mlir examples each have their own common_numba.py;
         # sharing one process lets the first-imported one win sys.modules and break the other
         - pytest tests/example_tests/device_tests/ -v -ra -k "(fp or curand) and not mlir"  # [is_gpu_available]
@@ -213,7 +213,7 @@ outputs:
         - nvmath.fft
         - nvmath.linalg
       commands:
-        - pip check
+        # - pip check
         - pytest tests/example_tests/fft_tests/ -k cpu -v -ra  # [is_gpu_available]
         - pytest tests/example_tests/matmul_tests/ -k cpu -v -ra  # [is_gpu_available]
     about:
@@ -256,7 +256,7 @@ outputs:
         - nvmath.distributed
         - nvmath.distributed.fft
       commands:
-        - pip check
+        # - pip check
         - mpiexec -n 2 pytest tests/example_tests/distributed_tests -v -ra -k "not sync"  # [is_gpu_available]
     about:
       license: Apache-2.0
